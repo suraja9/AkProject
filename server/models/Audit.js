@@ -16,8 +16,7 @@ const auditSchema = new mongoose.Schema({
             name: String,
             decisions: Number,
             couldDelegate: Number,
-            onlyYou: Number,
-            notSure: Number
+            notSure: Boolean
         }],
         annualCompensation: Number,
         averageMinutesPerDecision: Number,

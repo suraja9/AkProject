@@ -34,7 +34,7 @@ const AdminTimeTrends = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/analytics/trends?period=${period}`);
+            const response = await fetch(`https://akproject-l7pz.onrender.com/api/analytics/trends?period=${period}`);
             if (!response.ok) throw new Error('Failed to fetch data');
             const json = await response.json();
             setData(json);

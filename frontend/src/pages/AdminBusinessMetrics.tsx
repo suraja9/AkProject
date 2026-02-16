@@ -33,7 +33,7 @@ const AdminBusinessMetrics = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/analytics/business');
+            const response = await fetch('https://akproject-l7pz.onrender.com/api/analytics/business');
             if (!response.ok) throw new Error('Failed to fetch data');
             const json = await response.json();
             setData(json);

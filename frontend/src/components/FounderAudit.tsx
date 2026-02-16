@@ -44,15 +44,15 @@ export function FounderAudit() {
   const totals = useMemo(() => {
     const totalDecisions = auditData.decisionCategories.reduce((sum, cat) => sum + cat.decisions, 0);
     const totalCouldDelegate = auditData.decisionCategories.reduce((sum, cat) => sum + cat.couldDelegate, 0);
-    const totalNotSure = auditData.decisionCategories.reduce((sum, cat) => sum + cat.notSure, 0);
+    const totalNotSure = auditData.decisionCategories.filter((cat) => cat.notSure).length;
     return { totalDecisions, totalCouldDelegate, totalNotSure };
   }, [auditData.decisionCategories]);
 
   const results: AuditResults = useMemo(() => {
     const hourlyRate = auditData.annualCompensation / 2000;
 
-    // Use couldDelegate + notSure if available, else totalDecisions
-    const delegatableDecisions = totals.totalCouldDelegate + totals.totalNotSure;
+    // Use couldDelegate if available, else totalDecisions
+    const delegatableDecisions = totals.totalCouldDelegate;
     const decisionsForCalc = delegatableDecisions > 0 ? delegatableDecisions : totals.totalDecisions;
 
     const hoursPerWeek = (decisionsForCalc * auditData.averageMinutesPerDecision) / 60;
@@ -103,8 +103,7 @@ export function FounderAudit() {
         ...c,
         decisions: 0,
         couldDelegate: 0,
-        onlyYou: 0,
-        notSure: 0
+        notSure: false
       })),
       annualCompensation: 400000,
       averageMinutesPerDecision: 20,
@@ -141,7 +140,7 @@ export function FounderAudit() {
     try {
       const sessionId = tracker.getSessionId();
       console.log("Saving audit results...");
-      const response = await fetch("http://localhost:5000/api/audit", {
+      const response = await fetch("https://akproject-l7pz.onrender.com/api/audit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

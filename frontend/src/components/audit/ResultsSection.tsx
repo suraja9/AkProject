@@ -180,7 +180,7 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
       {/* Footer */}
       <div className="text-center text-sm text-muted-foreground mb-8">
         <p className="font-display text-lg font-semibold text-foreground mb-1">Anil Karakkattuu</p>
-        <p>Founder Operating Systems for Growth-Stage SaaS</p>
+        <p>Founder Operating Loop<sup>TM</sup> for Software Founders</p>
         <a
           href="https://www.anilkarakkattuu.com"
           target="_blank"

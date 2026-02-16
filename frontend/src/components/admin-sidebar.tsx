@@ -35,10 +35,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const overviewItems = [
     { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
-    { title: "Live Activity", url: "/admin/live", icon: Activity },
     { title: "Audits", url: "/admin/audits", icon: Inbox },
     { title: "Founders", url: "/admin/founders", icon: Users },
-    { title: "Reports", url: "/admin/reports", icon: FileText },
 ];
 
 const analyticsItems = [
@@ -47,6 +45,11 @@ const analyticsItems = [
     { title: "Funnel", url: "/admin/analytics/funnel", icon: Filter },
     { title: "Business Metrics", url: "/admin/analytics/business", icon: Target },
     { title: "Time Trends", url: "/admin/analytics/trends", icon: TrendingUp },
+];
+
+const moreItems = [
+    { title: "Live Activity", url: "/admin/live", icon: Activity },
+    { title: "Reports", url: "/admin/reports", icon: FileText },
 ];
 
 export function AdminSidebar() {
@@ -114,6 +117,19 @@ export function AdminSidebar() {
                             <SidebarGroupContent>
                                 <SidebarMenu className="space-y-0.5">
                                     {analyticsItems.map((item) => (
+                                        <NavItem key={item.title} item={item} isActive={location.pathname === item.url} />
+                                    ))}
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+
+                        <SidebarGroup className="py-1">
+                            <SidebarGroupLabel className="text-muted-foreground/80 text-[11px] font-semibold tracking-wider uppercase px-3 mb-1.5">
+                                More
+                            </SidebarGroupLabel>
+                            <SidebarGroupContent>
+                                <SidebarMenu className="space-y-0.5">
+                                    {moreItems.map((item) => (
                                         <NavItem key={item.title} item={item} isActive={location.pathname === item.url} />
                                     ))}
                                 </SidebarMenu>

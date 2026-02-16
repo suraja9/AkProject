@@ -42,17 +42,18 @@ export const calculateAnalytics = (audits: any[]) => {
         .slice(0, 5);
 
     // 4. Decision Breakdown (Aggregate)
-    const categoryAggregates: Record<string, { total: number, delegate: number, onlyYou: number, notSure: number }> = {};
+    const categoryAggregates: Record<string, { total: number, delegate: number, notSureCount: number }> = {};
 
     audits.forEach(audit => {
         audit.auditData?.decisionCategories?.forEach((cat: any) => {
             if (!categoryAggregates[cat.name]) {
-                categoryAggregates[cat.name] = { total: 0, delegate: 0, onlyYou: 0, notSure: 0 };
+                categoryAggregates[cat.name] = { total: 0, delegate: 0, notSureCount: 0 };
             }
             categoryAggregates[cat.name].total += cat.decisions || 0;
             categoryAggregates[cat.name].delegate += cat.couldDelegate || 0;
-            categoryAggregates[cat.name].onlyYou += cat.onlyYou || 0;
-            categoryAggregates[cat.name].notSure += cat.notSure || 0;
+            if (cat.notSure) {
+                categoryAggregates[cat.name].notSureCount += 1;
+            }
         });
     });
 
@@ -92,25 +93,34 @@ export const calculateAnalytics = (audits: any[]) => {
     const operationalPct = totalDecisionsForSplit > 0 ? Math.round((totalOperational / totalDecisionsForSplit) * 100) : 0;
     const strategicPct = totalDecisionsForSplit > 0 ? Math.round((totalStrategic / totalDecisionsForSplit) * 100) : 0;
 
-    // 8. Segmentation breakdowns
+    // 8. Segmentation breakdowns (include all options, show 0 when no data)
     const founderRoleCounts: Record<string, number> = {};
     const revenueRangeCounts: Record<string, number> = {};
     const teamSizeCounts: Record<string, number> = {};
     const industryVerticalCounts: Record<string, number> = {};
 
+    // Initialize all options with 0
+    Object.keys(SEGMENTATION_LABELS.founderRole).forEach(k => { founderRoleCounts[k] = 0; });
+    Object.keys(SEGMENTATION_LABELS.revenueRange).forEach(k => { revenueRangeCounts[k] = 0; });
+    Object.keys(SEGMENTATION_LABELS.teamSize).forEach(k => { teamSizeCounts[k] = 0; });
+    Object.keys(SEGMENTATION_LABELS.industryVertical).forEach(k => { industryVerticalCounts[k] = 0; });
+
     audits.forEach(audit => {
         const seg = audit.segmentation;
-        if (seg?.founderRole) founderRoleCounts[seg.founderRole] = (founderRoleCounts[seg.founderRole] || 0) + 1;
-        if (seg?.revenueRange) revenueRangeCounts[seg.revenueRange] = (revenueRangeCounts[seg.revenueRange] || 0) + 1;
-        if (seg?.teamSize) teamSizeCounts[seg.teamSize] = (teamSizeCounts[seg.teamSize] || 0) + 1;
-        if (seg?.industryVertical) industryVerticalCounts[seg.industryVertical] = (industryVerticalCounts[seg.industryVertical] || 0) + 1;
+        if (seg?.founderRole && founderRoleCounts[seg.founderRole] !== undefined) founderRoleCounts[seg.founderRole] += 1;
+        if (seg?.revenueRange && revenueRangeCounts[seg.revenueRange] !== undefined) revenueRangeCounts[seg.revenueRange] += 1;
+        if (seg?.teamSize && teamSizeCounts[seg.teamSize] !== undefined) teamSizeCounts[seg.teamSize] += 1;
+        if (seg?.industryVertical && industryVerticalCounts[seg.industryVertical] !== undefined) industryVerticalCounts[seg.industryVertical] += 1;
     });
 
+    const toSortedEntries = (counts: Record<string, number>) =>
+        Object.entries(counts).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+
     const segmentation = {
-        founderRole: Object.entries(founderRoleCounts).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
-        revenueRange: Object.entries(revenueRangeCounts).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
-        teamSize: Object.entries(teamSizeCounts).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
-        industryVertical: Object.entries(industryVerticalCounts).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
+        founderRole: toSortedEntries(founderRoleCounts),
+        revenueRange: toSortedEntries(revenueRangeCounts),
+        teamSize: toSortedEntries(teamSizeCounts),
+        industryVertical: toSortedEntries(industryVerticalCounts),
     };
 
     return {

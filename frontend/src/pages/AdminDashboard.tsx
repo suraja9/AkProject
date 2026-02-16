@@ -18,8 +18,7 @@ interface Audit {
             name: string;
             decisions: number;
             couldDelegate: number;
-            onlyYou: number;
-            notSure: number;
+            notSure: boolean;
         }[];
         annualCompensation: number;
         averageMinutesPerDecision: number;
@@ -75,8 +74,8 @@ const AdminDashboard = () => {
         setLoading(true);
         try {
             const [auditsRes, sessionsRes] = await Promise.all([
-                fetch('http://localhost:5000/api/audits'),
-                fetch('http://localhost:5000/api/sessions')
+                fetch('https://akproject-l7pz.onrender.com/api/audits'),
+                fetch('https://akproject-l7pz.onrender.com/api/sessions')
             ]);
 
             if (!auditsRes.ok || !sessionsRes.ok) throw new Error('Failed to fetch data');
@@ -153,277 +152,278 @@ const AdminDashboard = () => {
                 </Button>
             }
         >
-                    {/* Quick Stats Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="stat-card border-l-4 border-l-primary overflow-hidden">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">Total Audits</CardTitle>
-                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <Users className="h-4 w-4 text-primary" />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold tracking-tight">{analytics?.overview.totalAudits || 0}</div>
-                                <p className="text-xs text-muted-foreground mt-0.5">Audits completed</p>
-                            </CardContent>
-                        </Card>
-                        <Card className="stat-card border-l-4 border-l-green-500 overflow-hidden">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">Completion Rate</CardTitle>
-                                <div className="h-9 w-9 rounded-lg bg-green-500/10 flex items-center justify-center">
-                                    <Activity className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold tracking-tight text-green-600 dark:text-green-400">{sessionAnalytics?.completionRate || 0}%</div>
-                                <p className="text-xs text-muted-foreground mt-0.5">Started vs completed</p>
-                            </CardContent>
-                        </Card>
-                        <Card className="stat-card border-l-4 border-l-amber-500 overflow-hidden">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">Avg Time</CardTitle>
-                                <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                                    <Activity className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold tracking-tight">{sessionAnalytics?.avgCompletionTime || '0m 0s'}</div>
-                                <p className="text-xs text-muted-foreground mt-0.5">To complete audit</p>
-                            </CardContent>
-                        </Card>
-                        <Card className="stat-card border-l-4 border-l-destructive overflow-hidden">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">Major Drop-off</CardTitle>
-                                <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center">
-                                    <TrendingUp className="h-4 w-4 text-destructive rotate-180" />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-lg font-bold capitalize truncate text-destructive">
-                                    {sessionAnalytics?.dropOffData[0]?.name || "None"}
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-0.5">
-                                    {sessionAnalytics?.dropOffData[0]?.value || 0} users exited here
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </div>
+            {/* Quick Stats Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card className="stat-card border-l-4 border-l-primary overflow-hidden">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Audits</CardTitle>
+                        <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Users className="h-4 w-4 text-primary" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold tracking-tight">{analytics?.overview.totalAudits || 0}</div>
+                        <p className="text-xs text-muted-foreground mt-0.5">Audits completed</p>
+                    </CardContent>
+                </Card>
+                <Card className="stat-card border-l-4 border-l-green-500 overflow-hidden">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Completion Rate</CardTitle>
+                        <div className="h-9 w-9 rounded-lg bg-green-500/10 flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-green-600 dark:text-green-400" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold tracking-tight text-green-600 dark:text-green-400">{sessionAnalytics?.completionRate || 0}%</div>
+                        <p className="text-xs text-muted-foreground mt-0.5">Started vs completed</p>
+                    </CardContent>
+                </Card>
+                <Card className="stat-card border-l-4 border-l-amber-500 overflow-hidden">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Avg Time</CardTitle>
+                        <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold tracking-tight">{sessionAnalytics?.avgCompletionTime || '0m 0s'}</div>
+                        <p className="text-xs text-muted-foreground mt-0.5">To complete audit</p>
+                    </CardContent>
+                </Card>
+                <Card className="stat-card border-l-4 border-l-destructive overflow-hidden">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Major Drop-off</CardTitle>
+                        <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center">
+                            <TrendingUp className="h-4 w-4 text-destructive rotate-180" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-lg font-bold capitalize truncate text-destructive">
+                            {sessionAnalytics?.dropOffData[0]?.name || "None"}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            {sessionAnalytics?.dropOffData[0]?.value || 0} users exited here
+                        </p>
+                    </CardContent>
+                </Card>
+            </div>
 
-                    {/* Analytics Section */}
-                    {analytics && (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Analytics Section */}
+            {analytics && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                            {/* Drop-off Analysis */}
-                            <Card className="glass-card col-span-1 lg:col-span-2">
+                    {/* Drop-off Analysis */}
+                    <Card className="glass-card col-span-1 lg:col-span-2">
+                        <CardHeader>
+                            <CardTitle>Funnel Drop-off Analysis</CardTitle>
+                            <CardDescription>Where users abandon the audit flow</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[250px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={sessionAnalytics?.dropOffData} layout="vertical" margin={{ left: 40 }}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                    <XAxis type="number" />
+                                    <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} />
+                                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
+                                    <Bar dataKey="value" fill="hsl(var(--destructive))" radius={[0, 4, 4, 0]} name="Drop-offs" barSize={30} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+
+                    {/* Bottleneck Patterns Chart */}
+                    <Card className="glass-card col-span-1">
+                        <CardHeader>
+                            <CardTitle>Top Bottleneck Patterns</CardTitle>
+                            <CardDescription>Share of identified dysfunction patterns (percentage)</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[380px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart margin={{ top: 10, right: 80, bottom: 10, left: 80 }}>
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                                        formatter={(_, name, props: any) => {
+                                            const value = props?.payload?.count || 0;
+                                            const percent = totalPatternCount ? ((value / totalPatternCount) * 100).toFixed(1) : '0.0';
+                                            return [`${percent}%`, name as string];
+                                        }}
+                                    />
+                                    <Legend />
+                                    <Pie
+                                        data={analytics.patterns}
+                                        dataKey="count"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={95}
+                                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                    >
+                                        {analytics.patterns.map((entry: any, index: number) => (
+                                            <Cell key={`cell-${entry.name}-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+
+                    {/* Delay Tax Breakdown */}
+                    <Card className="glass-card col-span-1">
+                        <CardHeader>
+                            <CardTitle>Delay Tax Analysis</CardTitle>
+                            <CardDescription>Aggregate cost by delay category</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[380px] flex items-center">
+                            <ResponsiveContainer width="100%" height="90%">
+                                <BarChart data={analytics.delayTax} margin={{ top: 10, right: 20, bottom: 100, left: 10 }}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                    <XAxis
+                                        dataKey="name"
+                                        tick={{ fontSize: 11 }}
+                                        interval={0}
+                                        angle={-25}
+                                        textAnchor="end"
+                                        height={90}
+                                    />
+                                    <YAxis width={55} tick={{ fontSize: 10 }} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                                        formatter={(value: number) => formatCurrency(value)}
+                                    />
+                                    <Bar dataKey="value" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+
+                    {/* User Segmentation Charts */}
+                    {analytics.segmentation && (analytics.segmentation.founderRole.length > 0 || analytics.segmentation.industryVertical.length > 0) && (
+                        <>
+                            <Card className="glass-card col-span-1">
                                 <CardHeader>
-                                    <CardTitle>Funnel Drop-off Analysis</CardTitle>
-                                    <CardDescription>Where users abandon the audit flow</CardDescription>
+                                    <CardTitle>Founder Roles</CardTitle>
+                                    <CardDescription>Distribution by founder type</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[250px]">
+                                <CardContent className="h-[220px]">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={sessionAnalytics?.dropOffData} layout="vertical" margin={{ left: 40 }}>
+                                        <BarChart data={analytics.segmentation.founderRole.map(d => ({ ...d, name: formatSegmentationValue("founderRole", d.name) }))} layout="vertical" margin={{ left: 20 }}>
                                             <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                            <XAxis type="number" />
-                                            <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} />
+                                            <XAxis type="number" hide />
+                                            <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 11 }} />
                                             <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
-                                            <Bar dataKey="value" fill="hsl(var(--destructive))" radius={[0, 4, 4, 0]} name="Drop-offs" barSize={30} />
+                                            <Bar dataKey="count" fill="hsl(var(--accent))" radius={[0, 4, 4, 0]} barSize={18} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </CardContent>
                             </Card>
-
-                            {/* Bottleneck Patterns Chart */}
                             <Card className="glass-card col-span-1">
                                 <CardHeader>
-                                    <CardTitle>Top Bottleneck Patterns</CardTitle>
-                                    <CardDescription>Share of identified dysfunction patterns (percentage)</CardDescription>
+                                    <CardTitle>Revenue Ranges</CardTitle>
+                                    <CardDescription>Distribution by revenue</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[320px]">
+                                <CardContent className="h-[220px]">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart margin={{ top: 10, right: 80, bottom: 10, left: 80 }}>
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
-                                                formatter={(_, name, props: any) => {
-                                                    const value = props?.payload?.count || 0;
-                                                    const percent = totalPatternCount ? ((value / totalPatternCount) * 100).toFixed(1) : '0.0';
-                                                    return [`${percent}%`, name as string];
-                                                }}
+                                        <BarChart
+                                            data={analytics.segmentation.revenueRange.map(d => ({ ...d, name: formatSegmentationValue("revenueRange", d.name) }))}
+                                            margin={{ left: 0, right: 0, bottom: 40 }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                            <XAxis
+                                                dataKey="name"
+                                                tick={{ fontSize: 10 }}
+                                                interval={0}
+                                                angle={-20}
+                                                textAnchor="end"
+                                                height={60}
                                             />
-                                            <Legend />
-                                            <Pie
-                                                data={analytics.patterns}
-                                                dataKey="count"
-                                                nameKey="name"
-                                                cx="50%"
-                                                cy="50%"
-                                                outerRadius={95}
-                                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                            >
-                                                {analytics.patterns.map((entry: any, index: number) => (
-                                                    <Cell key={`cell-${entry.name}-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                ))}
-                                            </Pie>
-                                        </PieChart>
+                                            <YAxis />
+                                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
+                                            <Bar dataKey="count" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} barSize={18} />
+                                        </BarChart>
                                     </ResponsiveContainer>
                                 </CardContent>
                             </Card>
-
-                            {/* Delay Tax Breakdown */}
                             <Card className="glass-card col-span-1">
                                 <CardHeader>
-                                    <CardTitle>Delay Tax Analysis</CardTitle>
-                                    <CardDescription>Aggregate cost by delay category</CardDescription>
+                                    <CardTitle>Team Sizes</CardTitle>
+                                    <CardDescription>Distribution by team size</CardDescription>
                                 </CardHeader>
-                                <CardContent className="h-[320px]">
+                                <CardContent className="h-[220px]">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={analytics.delayTax} margin={{ top: 10, right: 20, bottom: 100, left: 10 }}>
+                                        <BarChart
+                                            data={analytics.segmentation.teamSize.map(d => ({ ...d, name: formatSegmentationValue("teamSize", d.name) }))}
+                                            margin={{ left: 0, right: 0, bottom: 40 }}
+                                        >
                                             <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                                             <XAxis
                                                 dataKey="name"
                                                 tick={{ fontSize: 11 }}
                                                 interval={0}
-                                                angle={-25}
+                                                angle={-20}
                                                 textAnchor="end"
-                                                height={90}
+                                                height={50}
                                             />
-                                            <YAxis width={55} tick={{ fontSize: 10 }} />
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
-                                                formatter={(value: number) => formatCurrency(value)}
-                                            />
-                                            <Bar dataKey="value" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            {/* User Segmentation Charts */}
-                            {analytics.segmentation && (analytics.segmentation.founderRole.length > 0 || analytics.segmentation.industryVertical.length > 0) && (
-                                <>
-                                    <Card className="glass-card col-span-1">
-                                        <CardHeader>
-                                            <CardTitle>Founder Roles</CardTitle>
-                                            <CardDescription>Distribution by founder type</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="h-[220px]">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart data={analytics.segmentation.founderRole.map(d => ({ ...d, name: formatSegmentationValue("founderRole", d.name) }))} layout="vertical" margin={{ left: 20 }}>
-                                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                                    <XAxis type="number" hide />
-                                                    <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 11 }} />
-                                                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
-                                                    <Bar dataKey="count" fill="hsl(var(--accent))" radius={[0, 4, 4, 0]} barSize={18} />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </CardContent>
-                                    </Card>
-                                    <Card className="glass-card col-span-1">
-                                        <CardHeader>
-                                            <CardTitle>Revenue Ranges</CardTitle>
-                                            <CardDescription>Distribution by revenue</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="h-[220px]">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart
-                                                    data={analytics.segmentation.revenueRange.map(d => ({ ...d, name: formatSegmentationValue("revenueRange", d.name) }))}
-                                                    margin={{ left: 0, right: 0, bottom: 40 }}
-                                                >
-                                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                                    <XAxis
-                                                        dataKey="name"
-                                                        tick={{ fontSize: 10 }}
-                                                        interval={0}
-                                                        angle={-20}
-                                                        textAnchor="end"
-                                                        height={60}
-                                                    />
-                                                    <YAxis />
-                                                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
-                                                    <Bar dataKey="count" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} barSize={18} />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </CardContent>
-                                    </Card>
-                                    <Card className="glass-card col-span-1">
-                                        <CardHeader>
-                                            <CardTitle>Team Sizes</CardTitle>
-                                            <CardDescription>Distribution by team size</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="h-[220px]">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart
-                                                    data={analytics.segmentation.teamSize.map(d => ({ ...d, name: formatSegmentationValue("teamSize", d.name) }))}
-                                                    margin={{ left: 0, right: 0, bottom: 40 }}
-                                                >
-                                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                                    <XAxis
-                                                        dataKey="name"
-                                                        tick={{ fontSize: 11 }}
-                                                        interval={0}
-                                                        angle={-20}
-                                                        textAnchor="end"
-                                                        height={50}
-                                                    />
-                                                    <YAxis />
-                                                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
-                                                    <Bar dataKey="count" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} barSize={18} />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </CardContent>
-                                    </Card>
-                                    <Card className="glass-card col-span-1">
-                                        <CardHeader>
-                                            <CardTitle>Industry Verticals</CardTitle>
-                                            <CardDescription>Distribution by industry</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="h-[220px]">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart
-                                                    data={analytics.segmentation.industryVertical.map(d => ({ ...d, name: formatSegmentationValue("industryVertical", d.name) }))}
-                                                    margin={{ left: 0, right: 0, bottom: 40 }}
-                                                >
-                                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                                    <XAxis
-                                                        dataKey="name"
-                                                        tick={{ fontSize: 10 }}
-                                                        interval={0}
-                                                        angle={-20}
-                                                        textAnchor="end"
-                                                        height={60}
-                                                    />
-                                                    <YAxis />
-                                                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
-                                                    <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={18} />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </CardContent>
-                                    </Card>
-                                </>
-                            )}
-
-                            {/* Decision Categories Pie */}
-                            <Card className="glass-card col-span-1 lg:col-span-2">
-                                <CardHeader>
-                                    <CardTitle>Decision Breakdown</CardTitle>
-                                    <CardDescription>Aggregate distribution of decision types across all audits</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[350px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={analytics.categories}>
-                                            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                            <XAxis dataKey="name" />
                                             <YAxis />
-                                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))' }} />
-                                            <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                                            <Bar dataKey="delegate" stackId="a" fill="hsl(var(--success))" name="Delegate" radius={[0, 0, 4, 4]} />
-                                            <Bar dataKey="onlyYou" stackId="a" fill="hsl(var(--warning))" name="Only You" radius={[0, 0, 0, 0]} />
-                                            <Bar dataKey="notSure" stackId="a" fill="hsl(var(--muted-foreground))" name="Not Sure" radius={[4, 4, 0, 0]} />
+                                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
+                                            <Bar dataKey="count" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} barSize={18} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </CardContent>
                             </Card>
-                        </div>
+                            <Card className="glass-card col-span-1">
+                                <CardHeader>
+                                    <CardTitle>Industry Verticals</CardTitle>
+                                    <CardDescription>Distribution by industry</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[220px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart
+                                            data={analytics.segmentation.industryVertical.map(d => ({ ...d, name: formatSegmentationValue("industryVertical", d.name) }))}
+                                            margin={{ left: 0, right: 0, bottom: 40 }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                            <XAxis
+                                                dataKey="name"
+                                                tick={{ fontSize: 10 }}
+                                                interval={0}
+                                                angle={-20}
+                                                textAnchor="end"
+                                                height={60}
+                                            />
+                                            <YAxis />
+                                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
+                                            <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={18} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+                        </>
                     )}
+
+
+
+                    {/* Decision Categories Pie */}
+                    <Card className="glass-card col-span-1 lg:col-span-2">
+                        <CardHeader>
+                            <CardTitle>Decision Breakdown</CardTitle>
+                            <CardDescription>Aggregate distribution of decision types across all audits</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[350px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={analytics.categories}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))' }} />
+                                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                                    <Bar dataKey="total" fill="hsl(var(--muted))" name="Total Decisions" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="delegate" fill="hsl(var(--success))" name="Delegatable" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
         </AdminPageLayout>
     );
 };

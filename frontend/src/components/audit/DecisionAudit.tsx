@@ -1,6 +1,7 @@
 import { DecisionCategory, OPERATIONAL_CATEGORY_IDS } from "@/types/audit";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowRight, ArrowLeft, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
@@ -16,8 +17,7 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
   const totals = useMemo(() => {
     const totalDecisions = categories.reduce((sum, cat) => sum + cat.decisions, 0);
     const totalCouldDelegate = categories.reduce((sum, cat) => sum + cat.couldDelegate, 0);
-    const totalOnlyYou = categories.reduce((sum, cat) => sum + cat.onlyYou, 0);
-    const totalNotSure = categories.reduce((sum, cat) => sum + cat.notSure, 0);
+    const totalNotSure = categories.filter((cat) => cat.notSure).length; // Count of checked items
 
     const operationalDecisions = categories
       .filter((cat) => OPERATIONAL_CATEGORY_IDS.includes(cat.id))
@@ -30,17 +30,16 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
     return {
       totalDecisions,
       totalCouldDelegate,
-      totalOnlyYou,
       totalNotSure,
       operationalDecisions,
       operationalPercent,
     };
   }, [categories]);
 
-  const handleFieldChange = (id: string, field: keyof DecisionCategory, value: number) => {
+  const handleFieldChange = (id: string, field: keyof DecisionCategory, value: number | boolean) => {
     onUpdate(
       categories.map((cat) =>
-        cat.id === id ? { ...cat, [field]: Math.max(0, value) } : cat
+        cat.id === id ? { ...cat, [field]: typeof value === 'number' ? Math.max(0, value) : value } : cat
       )
     );
   };
@@ -65,7 +64,7 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
           The Decision Audit
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Think about the last 30 days. For each category, estimate how many decisions you personally made that someone on your team could have made with the right framework or authority.
+          Think about the last 1 - 4 Weeks. For each category, estimate how many decisions you personally made that someone on your team could have made with the right framework or authority.
         </p>
       </div>
 
@@ -74,9 +73,8 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
         {/* Header */}
         <div className="hidden md:grid grid-cols-12 gap-2 p-4 bg-secondary/30 border-b border-border text-sm font-medium text-muted-foreground">
           <div className="col-span-4">Category</div>
-          <div className="col-span-2 text-center">#Decisions</div>
-          <div className="col-span-2 text-center">Could Delegate</div>
-          <div className="col-span-2 text-center">Only You</div>
+          <div className="col-span-3 text-center">#Decisions</div>
+          <div className="col-span-3 text-center">Could Delegate</div>
           <div className="col-span-2 text-center">Not Sure</div>
         </div>
 
@@ -89,7 +87,7 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
             <div className="col-span-1 md:col-span-4 text-sm font-medium">
               {category.name}
             </div>
-            <div className="col-span-1 md:col-span-8 grid grid-cols-4 gap-4">
+            <div className="col-span-1 md:col-span-8 grid grid-cols-3 gap-4 items-center">
               <div className="flex flex-col items-center gap-2 md:hidden">
                 <span className="text-xs text-muted-foreground">#Decisions</span>
                 <Input
@@ -102,7 +100,7 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
                   placeholder="0"
                 />
               </div>
-              <div className="hidden md:block">
+              <div className="hidden md:block px-4">
                 <Input
                   type="number"
                   min="0"
@@ -126,7 +124,7 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
                   placeholder="0"
                 />
               </div>
-              <div className="hidden md:block">
+              <div className="hidden md:block px-4">
                 <Input
                   type="number"
                   min="0"
@@ -138,51 +136,12 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-2 md:hidden">
-                <span className="text-xs text-muted-foreground">Only You</span>
-                <Input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={category.onlyYou || ""}
-                  onChange={(e) => handleFieldChange(category.id, 'onlyYou', parseInt(e.target.value) || 0)}
-                  className="w-full text-center input-field"
-                  placeholder="0"
-                />
-              </div>
-              <div className="hidden md:block">
-                <Input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={category.onlyYou || ""}
-                  onChange={(e) => handleFieldChange(category.id, 'onlyYou', parseInt(e.target.value) || 0)}
-                  className="w-full text-center input-field"
-                  placeholder="0"
-                />
-              </div>
-
-              <div className="flex flex-col items-center gap-2 md:hidden">
-                <span className="text-xs text-muted-foreground">Not Sure</span>
-                <Input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={category.notSure || ""}
-                  onChange={(e) => handleFieldChange(category.id, 'notSure', parseInt(e.target.value) || 0)}
-                  className="w-full text-center input-field"
-                  placeholder="0"
-                />
-              </div>
-              <div className="hidden md:block">
-                <Input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={category.notSure || ""}
-                  onChange={(e) => handleFieldChange(category.id, 'notSure', parseInt(e.target.value) || 0)}
-                  className="w-full text-center input-field"
-                  placeholder="0"
+              <div className="flex flex-col items-center gap-2 md:col-span-1 md:justify-self-center">
+                <span className="text-xs text-muted-foreground md:hidden">Not Sure</span>
+                <Checkbox
+                  checked={category.notSure}
+                  onCheckedChange={(checked) => handleFieldChange(category.id, 'notSure', checked === true)}
+                  className="w-6 h-6 border-2"
                 />
               </div>
             </div>
@@ -248,8 +207,7 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
             <p className="text-4xl font-display font-bold">{totals.totalDecisions}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-muted-foreground">
               <span>Could Delegate: <strong className="text-success">{totals.totalCouldDelegate}</strong></span>
-              <span>Only You: <strong className="text-danger">{totals.totalOnlyYou}</strong></span>
-              <span>Not Sure: <strong className="text-warning">{totals.totalNotSure}</strong></span>
+              <span>Not Sure: <strong className="text-warning">{totals.totalNotSure} (categories)</strong></span>
             </div>
           </div>
           <div className={cn("px-6 py-3 rounded-xl", scoreInfo.bg)}>

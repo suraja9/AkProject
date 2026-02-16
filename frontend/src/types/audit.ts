@@ -3,8 +3,7 @@ export interface DecisionCategory {
   name: string;
   decisions: number;
   couldDelegate: number;
-  onlyYou: number;
-  notSure: number;
+  notSure: boolean;
 }
 
 export interface BottleneckPattern {
@@ -30,13 +29,9 @@ export interface UserSegmentationData {
 export interface AuditData {
   // Section 1: Decision Audit
   decisionCategories: DecisionCategory[];
-
-  // Section 2: Cost Calculator
   annualCompensation: number;
   averageMinutesPerDecision: number;
   delayTax: DelayTaxItem[];
-
-  // Section 3: Bottleneck Patterns
   patterns: BottleneckPattern[];
 }
 
@@ -73,23 +68,22 @@ export const OPERATIONAL_CATEGORY_IDS = [
 ];
 
 export const INITIAL_CATEGORIES: DecisionCategory[] = [
-  { id: 'hiring', name: 'Hiring / People decisions', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'team', name: 'Team conflicts / Performance issues', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'product', name: 'Product / Feature prioritization', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'technical', name: 'Technical / Architecture', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'customer', name: 'Customer issues / Escalations', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'spending', name: 'Spending / Budget approvals', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'sales', name: 'Sales / Deal approvals', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'pricing', name: 'Pricing / Packaging', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'operations', name: 'Operations / Process questions', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
-  { id: 'marketing', name: 'Marketing / Content approvals', decisions: 0, couldDelegate: 0, onlyYou: 0, notSure: 0 },
+  { id: 'hiring', name: 'Hiring / People decisions', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'team', name: 'Team conflicts / Performance issues', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'product', name: 'Product / Feature prioritization', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'technical', name: 'Technical / Architecture', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'customer', name: 'Customer issues / Escalations', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'spending', name: 'Spending / Budget approvals', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'sales', name: 'Sales / Deal approvals', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'pricing', name: 'Pricing / Packaging', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'operations', name: 'Operations / Process questions', decisions: 0, couldDelegate: 0, notSure: false },
+  { id: 'marketing', name: 'Marketing / Content approvals', decisions: 0, couldDelegate: 0, notSure: false },
 ];
 
 export const INITIAL_DELAY_TAX: DelayTaxItem[] = [
   { id: 'late-launches', name: 'Product/feature launches that shipped late', amount: 0 },
   { id: 'stalled-deals', name: 'Deals that stalled waiting for your approval', amount: 0 },
   { id: 'churned-customers', name: 'Customers who churned while waiting for resolution', amount: 0 },
-  { id: 'lost-hires', name: 'Hires you lost because you decided too slowly', amount: 0 },
 ];
 
 export const INITIAL_PATTERNS: BottleneckPattern[] = [

@@ -32,11 +32,10 @@ export function CostCalculator({
 }: CostCalculatorProps) {
   const [animatedCost, setAnimatedCost] = useState(0);
 
-  // Calculate decisions for hours lost: use couldDelegate + notSure if they exist, else use totalDecisions
+  // Calculate decisions for hours lost: use couldDelegate if available, else use totalDecisions
   const decisionsForHoursLost = useMemo(() => {
-    const delegatableDecisions = totalCouldDelegate + totalNotSure;
-    return delegatableDecisions > 0 ? delegatableDecisions : totalDecisions;
-  }, [totalCouldDelegate, totalNotSure, totalDecisions]);
+    return totalCouldDelegate > 0 ? totalCouldDelegate : totalDecisions;
+  }, [totalCouldDelegate, totalDecisions]);
 
   const hourlyRate = annualCompensation / 2000;
   const minutesPerWeek = decisionsForHoursLost * averageMinutes;
@@ -45,8 +44,8 @@ export function CostCalculator({
   const sectionACost = hoursPerYear * hourlyRate;
 
   // Section B: Delay Tax calculations
-  const totalDelayTax30Days = useMemo(() => 
-    delayTax.reduce((sum, item) => sum + item.amount, 0), 
+  const totalDelayTax30Days = useMemo(() =>
+    delayTax.reduce((sum, item) => sum + item.amount, 0),
     [delayTax]
   );
   const delayTaxAnnual = totalDelayTax30Days * 12;
@@ -164,8 +163,8 @@ export function CostCalculator({
                 <div>
                   <span className="text-muted-foreground">Delegatable decisions per week</span>
                   <p className="text-xs text-muted-foreground/70 mt-0.5">
-                    {totalCouldDelegate + totalNotSure > 0 
-                      ? "(Could Delegate + Not Sure)" 
+                    {totalCouldDelegate > 0
+                      ? "(Could Delegate)"
                       : "(Using #Decisions since no delegation data entered)"}
                   </p>
                 </div>
@@ -225,7 +224,7 @@ export function CostCalculator({
           The Delay Tax
         </h3>
         <p className="text-muted-foreground mb-6">
-          Your time cost is just part of the picture. When decisions wait on you, revenue gets delayed or lost entirely. Estimate the impact over the last 30 days:
+          Your time cost is just part of the picture. When decisions wait on you, revenue gets delayed or lost entirely. Estimate the impact over the last 1-4 Weeks:
         </p>
 
         <div className="glass-card rounded-2xl p-6">

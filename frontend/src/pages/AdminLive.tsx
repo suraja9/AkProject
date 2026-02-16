@@ -22,7 +22,7 @@ const AdminLive = () => {
     const fetchSessions = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/sessions');
+            const response = await fetch('https://akproject-l7pz.onrender.com/api/sessions');
             if (!response.ok) throw new Error('Failed to fetch sessions');
             const data = await response.json();
             // Filter for live/recent sessions only or show all with status?
@@ -76,47 +76,7 @@ const AdminLive = () => {
             }
         >
                     <div className="space-y-6">
-                        <div>
-                            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                                <PlayCircle className="h-5 w-5 text-green-500" />
-                                Active Now ({activeSessions.length})
-                            </h2>
-                            {activeSessions.length === 0 ? (
-                                <Card className="border-dashed">
-                                    <CardContent className="h-32 flex items-center justify-center text-muted-foreground">
-                                        No active sessions at the moment.
-                                    </CardContent>
-                                </Card>
-                            ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {activeSessions.map((session) => (
-                                        <Card key={session.sessionId} className="glass-card border-l-4 border-l-green-500 animate-pulse-glow">
-                                            <CardHeader className="pb-2">
-                                                <div className="flex justify-between items-start">
-                                                    <Badge variant="outline" className="font-mono text-[10px] uppercase">
-                                                        {session.sessionId.substring(0, 8)}...
-                                                    </Badge>
-                                                    <span className="text-xs font-medium text-green-600 flex items-center gap-1">
-                                                        <span className="block h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                                        Live
-                                                    </span>
-                                                </div>
-                                                <CardTitle className="text-base mt-2">
-                                                    Current Step: <span className="text-primary">{session.lastStep}</span>
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                    <Clock className="h-4 w-4" />
-                                                    {getDuration(session.startTime)}
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
+                        
                         {/* Recent History (could be truncated) */}
                         <div>
                             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">

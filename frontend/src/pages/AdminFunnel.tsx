@@ -25,8 +25,8 @@ const AdminFunnel = () => {
         setLoading(true);
         try {
             const [sessionsRes, auditsRes] = await Promise.all([
-                fetch('http://localhost:5000/api/sessions'),
-                fetch('http://localhost:5000/api/audits')
+                fetch('https://akproject-l7pz.onrender.com/api/sessions'),
+                fetch('https://akproject-l7pz.onrender.com/api/audits')
             ]);
 
             if (!sessionsRes.ok || !auditsRes.ok) throw new Error('Failed to fetch data');
