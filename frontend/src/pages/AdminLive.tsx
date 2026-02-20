@@ -22,7 +22,7 @@ const AdminLive = () => {
     const fetchSessions = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://akproject-l7pz.onrender.com/api/sessions');
+            const response = await fetch('http://localhost:5000/api/sessions');
             if (!response.ok) throw new Error('Failed to fetch sessions');
             const data = await response.json();
             // Filter for live/recent sessions only or show all with status?
@@ -75,44 +75,44 @@ const AdminLive = () => {
                 </Button>
             }
         >
-                    <div className="space-y-6">
-                        
-                        {/* Recent History (could be truncated) */}
-                        <div>
-                            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                                <Clock className="h-5 w-5 text-muted-foreground" />
-                                Recent Completions
-                            </h2>
-                            <Card className="glass-card">
-                                <CardContent className="p-0">
-                                    <div className="rounded-md border-0">
-                                        {/* Simple list or table for recent logs */}
-                                        <div className="divide-y divide-border">
-                                            {completedSessions.slice(0, 5).map(session => (
-                                                <div key={session.sessionId} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
-                                                    <div className="flex flex-col gap-1">
-                                                        <span className="font-mono text-xs text-muted-foreground">ID: {session.sessionId}</span>
-                                                        <span className="font-medium text-sm">Completed Audit</span>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className="text-xs text-muted-foreground">
-                                                            {new Date(session.endTime || session.startTime).toLocaleTimeString()}
-                                                        </div>
-                                                        <Badge variant="secondary" className="mt-1 text-[10px]">
-                                                            Completed
-                                                        </Badge>
-                                                    </div>
+            <div className="space-y-6">
+
+                {/* Recent History (could be truncated) */}
+                <div>
+                    <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <Clock className="h-5 w-5 text-muted-foreground" />
+                        Recent Completions
+                    </h2>
+                    <Card className="glass-card">
+                        <CardContent className="p-0">
+                            <div className="rounded-md border-0">
+                                {/* Simple list or table for recent logs */}
+                                <div className="divide-y divide-border">
+                                    {completedSessions.slice(0, 5).map(session => (
+                                        <div key={session.sessionId} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                                            <div className="flex flex-col gap-1">
+                                                <span className="font-mono text-xs text-muted-foreground">ID: {session.sessionId}</span>
+                                                <span className="font-medium text-sm">Completed Audit</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-xs text-muted-foreground">
+                                                    {new Date(session.endTime || session.startTime).toLocaleTimeString()}
                                                 </div>
-                                            ))}
-                                            {completedSessions.length === 0 && (
-                                                <div className="p-8 text-center text-muted-foreground">No recently completed sessions.</div>
-                                            )}
+                                                <Badge variant="secondary" className="mt-1 text-[10px]">
+                                                    Completed
+                                                </Badge>
+                                            </div>
                                         </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
+                                    ))}
+                                    {completedSessions.length === 0 && (
+                                        <div className="p-8 text-center text-muted-foreground">No recently completed sessions.</div>
+                                    )}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
         </AdminPageLayout>
     );
 };

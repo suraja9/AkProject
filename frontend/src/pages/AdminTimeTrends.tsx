@@ -34,7 +34,7 @@ const AdminTimeTrends = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://akproject-l7pz.onrender.com/api/analytics/trends?period=${period}`);
+            const response = await fetch(`http://localhost:5000/api/analytics/trends?period=${period}`);
             if (!response.ok) throw new Error('Failed to fetch data');
             const json = await response.json();
             setData(json);
@@ -95,96 +95,96 @@ const AdminTimeTrends = () => {
                 </>
             }
         >
-                    {!loading && data && chartData.length > 0 ? (
-                        <>
-                            <Card className="glass-card">
-                                <CardHeader>
-                                    <CardTitle>Audits & Sessions Over Time</CardTitle>
-                                    <CardDescription>Are you getting more audits over time?</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[350px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={chartData}>
-                                            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                            <XAxis dataKey="periodLabel" tick={{ fontSize: 10 }} />
-                                            <YAxis tick={{ fontSize: 10 }} />
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
-                                                formatter={(value: number) => [value, '']}
-                                            />
-                                            <Legend />
-                                            <Line
-                                                type="monotone"
-                                                dataKey="audits"
-                                                stroke="hsl(var(--primary))"
-                                                strokeWidth={2}
-                                                dot={{ r: 3 }}
-                                                name="Audits"
-                                            />
-                                            <Line
-                                                type="monotone"
-                                                dataKey="sessions"
-                                                stroke="hsl(var(--accent))"
-                                                strokeWidth={2}
-                                                dot={{ r: 3 }}
-                                                name="Sessions"
-                                            />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
+            {!loading && data && chartData.length > 0 ? (
+                <>
+                    <Card className="glass-card">
+                        <CardHeader>
+                            <CardTitle>Audits & Sessions Over Time</CardTitle>
+                            <CardDescription>Are you getting more audits over time?</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[350px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={chartData}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                    <XAxis dataKey="periodLabel" tick={{ fontSize: 10 }} />
+                                    <YAxis tick={{ fontSize: 10 }} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                                        formatter={(value: number) => [value, '']}
+                                    />
+                                    <Legend />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="audits"
+                                        stroke="hsl(var(--primary))"
+                                        strokeWidth={2}
+                                        dot={{ r: 3 }}
+                                        name="Audits"
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="sessions"
+                                        stroke="hsl(var(--accent))"
+                                        strokeWidth={2}
+                                        dot={{ r: 3 }}
+                                        name="Sessions"
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
 
-                            <Card className="glass-card">
-                                <CardHeader>
-                                    <CardTitle>Completion Rate Over Time</CardTitle>
-                                    <CardDescription>Is your conversion rate improving?</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={chartData}>
-                                            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                            <XAxis dataKey="periodLabel" tick={{ fontSize: 10 }} />
-                                            <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
-                                                formatter={(value: number) => [`${value}%`, 'Completion Rate']}
-                                            />
-                                            <Line type="monotone" dataKey="completionRate" stroke="hsl(var(--success))" strokeWidth={2} dot={{ r: 4 }} name="Completion %" />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
+                    <Card className="glass-card">
+                        <CardHeader>
+                            <CardTitle>Completion Rate Over Time</CardTitle>
+                            <CardDescription>Is your conversion rate improving?</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={chartData}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                    <XAxis dataKey="periodLabel" tick={{ fontSize: 10 }} />
+                                    <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                                        formatter={(value: number) => [`${value}%`, 'Completion Rate']}
+                                    />
+                                    <Line type="monotone" dataKey="completionRate" stroke="hsl(var(--success))" strokeWidth={2} dot={{ r: 4 }} name="Completion %" />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
 
-                            <Card className="glass-card">
-                                <CardHeader>
-                                    <CardTitle>Avg Bottleneck Cost Over Time</CardTitle>
-                                    <CardDescription>Average bottleneck cost per period</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={chartData}>
-                                            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                            <XAxis dataKey="periodLabel" tick={{ fontSize: 10 }} />
-                                            <YAxis tickFormatter={formatCurrency} tick={{ fontSize: 10 }} />
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
-                                                formatter={(value: number) => [formatCurrency(value), 'Avg Cost']}
-                                            />
-                                            <Line type="monotone" dataKey="avgBottleneckCost" stroke="hsl(var(--destructive))" strokeWidth={2} dot={{ r: 4 }} name="Avg Bottleneck Cost" />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-                        </>
+                    <Card className="glass-card">
+                        <CardHeader>
+                            <CardTitle>Avg Bottleneck Cost Over Time</CardTitle>
+                            <CardDescription>Average bottleneck cost per period</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={chartData}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                    <XAxis dataKey="periodLabel" tick={{ fontSize: 10 }} />
+                                    <YAxis tickFormatter={formatCurrency} tick={{ fontSize: 10 }} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                                        formatter={(value: number) => [formatCurrency(value), 'Avg Cost']}
+                                    />
+                                    <Line type="monotone" dataKey="avgBottleneckCost" stroke="hsl(var(--destructive))" strokeWidth={2} dot={{ r: 4 }} name="Avg Bottleneck Cost" />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </>
+            ) : (
+                <div className="flex h-[50vh] w-full items-center justify-center">
+                    {loading ? (
+                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
                     ) : (
-                        <div className="flex h-[50vh] w-full items-center justify-center">
-                            {loading ? (
-                                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                            ) : (
-                                <div className="text-muted-foreground">No time trends data available.</div>
-                            )}
-                        </div>
+                        <div className="text-muted-foreground">No time trends data available.</div>
                     )}
+                </div>
+            )}
         </AdminPageLayout>
     );
 };

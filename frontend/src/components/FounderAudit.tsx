@@ -140,7 +140,7 @@ export function FounderAudit() {
     try {
       const sessionId = tracker.getSessionId();
       console.log("Saving audit results...");
-      const response = await fetch("https://akproject-l7pz.onrender.com/api/audit", {
+      const response = await fetch("http://localhost:5000/api/audit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

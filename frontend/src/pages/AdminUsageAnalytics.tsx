@@ -25,8 +25,8 @@ const AdminUsageAnalytics = () => {
         setLoading(true);
         try {
             const [sessionsRes, auditsRes] = await Promise.all([
-                fetch('https://akproject-l7pz.onrender.com/api/sessions'),
-                fetch('https://akproject-l7pz.onrender.com/api/audits')
+                fetch('http://localhost:5000/api/sessions'),
+                fetch('http://localhost:5000/api/audits')
             ]);
 
             if (!sessionsRes.ok || !auditsRes.ok) throw new Error('Failed to fetch data');
@@ -87,82 +87,82 @@ const AdminUsageAnalytics = () => {
                 </Button>
             }
         >
-                    {!loading && sessionAnalytics ? (
-                        <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <Card className="glass-card border-t-4 border-t-primary">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                        <CardTitle className="text-sm font-medium">Total Audits</CardTitle>
-                                        <Users className="h-4 w-4 text-primary" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">{totalAuditsCompleted}</div>
-                                        <p className="text-xs text-muted-foreground">Audits Completed</p>
-                                    </CardContent>
-                                </Card>
-                                <Card className="glass-card border-t-4 border-t-success">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                        <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
-                                        <Users className="h-4 w-4 text-success" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold text-success">{sessionAnalytics.completionRate}%</div>
-                                        <p className="text-xs text-muted-foreground">Started vs Completed</p>
-                                    </CardContent>
-                                </Card>
-                                <Card className="glass-card border-t-4 border-t-warning">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                        <CardTitle className="text-sm font-medium">Avg Time</CardTitle>
-                                        <Activity className="h-4 w-4 text-warning" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">{sessionAnalytics.avgCompletionTime}</div>
-                                        <p className="text-xs text-muted-foreground">To complete audit</p>
-                                    </CardContent>
-                                </Card>
-                                <Card className="glass-card border-t-4 border-t-destructive">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                                        <CardTitle className="text-sm font-medium">Major Drop-off</CardTitle>
-                                        <TrendingUp className="h-4 w-4 text-destructive rotate-180" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-xl font-bold capitalize truncate text-destructive">
-                                            {formatStepName(sessionAnalytics.dropOffData[0]?.name || 'None')}
-                                        </div>
-                                        <p className="text-xs text-muted-foreground">
-                                            {sessionAnalytics.dropOffData[0]?.value || 0} users exited here
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </div>
+            {!loading && sessionAnalytics ? (
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Card className="glass-card border-t-4 border-t-primary">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                <CardTitle className="text-sm font-medium">Total Audits</CardTitle>
+                                <Users className="h-4 w-4 text-primary" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{totalAuditsCompleted}</div>
+                                <p className="text-xs text-muted-foreground">Audits Completed</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="glass-card border-t-4 border-t-success">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
+                                <Users className="h-4 w-4 text-success" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-success">{sessionAnalytics.completionRate}%</div>
+                                <p className="text-xs text-muted-foreground">Started vs Completed</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="glass-card border-t-4 border-t-warning">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                <CardTitle className="text-sm font-medium">Avg Time</CardTitle>
+                                <Activity className="h-4 w-4 text-warning" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{sessionAnalytics.avgCompletionTime}</div>
+                                <p className="text-xs text-muted-foreground">To complete audit</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="glass-card border-t-4 border-t-destructive">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                                <CardTitle className="text-sm font-medium">Major Drop-off</CardTitle>
+                                <TrendingUp className="h-4 w-4 text-destructive rotate-180" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-xl font-bold capitalize truncate text-destructive">
+                                    {formatStepName(sessionAnalytics.dropOffData[0]?.name || 'None')}
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    {sessionAnalytics.dropOffData[0]?.value || 0} users exited here
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
 
-                            <Card className="glass-card col-span-1 lg:col-span-2">
-                                <CardHeader>
-                                    <CardTitle>Funnel Drop-off Analysis</CardTitle>
-                                    <CardDescription>Where users abandon the audit flow</CardDescription>
-                                </CardHeader>
-                                <CardContent className="h-[250px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={dropOffDataFormatted} layout="vertical" margin={{ left: 40 }}>
-                                            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                            <XAxis type="number" />
-                                            <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} />
-                                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
-                                            <Bar dataKey="value" fill="hsl(var(--destructive))" radius={[0, 4, 4, 0]} name="Drop-offs" barSize={30} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-                        </>
+                    <Card className="glass-card col-span-1 lg:col-span-2">
+                        <CardHeader>
+                            <CardTitle>Funnel Drop-off Analysis</CardTitle>
+                            <CardDescription>Where users abandon the audit flow</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[250px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={dropOffDataFormatted} layout="vertical" margin={{ left: 40 }}>
+                                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                    <XAxis type="number" />
+                                    <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} />
+                                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
+                                    <Bar dataKey="value" fill="hsl(var(--destructive))" radius={[0, 4, 4, 0]} name="Drop-offs" barSize={30} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </>
+            ) : (
+                <div className="flex h-[50vh] w-full items-center justify-center">
+                    {loading ? (
+                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
                     ) : (
-                        <div className="flex h-[50vh] w-full items-center justify-center">
-                            {loading ? (
-                                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                            ) : (
-                                <div className="text-muted-foreground">No usage analytics available.</div>
-                            )}
-                        </div>
+                        <div className="text-muted-foreground">No usage analytics available.</div>
                     )}
+                </div>
+            )}
         </AdminPageLayout>
     );
 };

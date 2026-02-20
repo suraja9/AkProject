@@ -74,8 +74,8 @@ const AdminDashboard = () => {
         setLoading(true);
         try {
             const [auditsRes, sessionsRes] = await Promise.all([
-                fetch('https://akproject-l7pz.onrender.com/api/audits'),
-                fetch('https://akproject-l7pz.onrender.com/api/sessions')
+                fetch('http://localhost:5000/api/audits'),
+                fetch('http://localhost:5000/api/sessions')
             ]);
 
             if (!auditsRes.ok || !sessionsRes.ok) throw new Error('Failed to fetch data');

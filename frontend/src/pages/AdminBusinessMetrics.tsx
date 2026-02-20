@@ -33,7 +33,7 @@ const AdminBusinessMetrics = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://akproject-l7pz.onrender.com/api/analytics/business');
+            const response = await fetch('http://localhost:5000/api/analytics/business');
             if (!response.ok) throw new Error('Failed to fetch data');
             const json = await response.json();
             setData(json);
@@ -72,122 +72,122 @@ const AdminBusinessMetrics = () => {
                 </Button>
             }
         >
-                    {!loading && data ? (
-                        <>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <Card className="glass-card border-t-4 border-t-primary">
-                                    <CardHeader className="pb-2">
-                                        <CardTitle className="text-sm font-medium flex items-center gap-2">
-                                            <Mail className="h-4 w-4" /> Email Capture Rate
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">{data.emailCaptureRate}%</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            Of users who reached email step and completed
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                                <Card className="glass-card border-t-4 border-t-accent">
-                                    <CardHeader className="pb-2">
-                                        <CardTitle className="text-sm font-medium flex items-center gap-2">
-                                            <Users className="h-4 w-4" /> Return Visitors
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">{data.returnVisitorCount}</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            Founders who retook the audit
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                                <Card className="glass-card border-t-4 border-t-warning">
-                                    <CardHeader className="pb-2">
-                                        <CardTitle className="text-sm font-medium flex items-center gap-2">
-                                            <AlertCircle className="h-4 w-4" /> Clarity Call Conversion
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold text-muted-foreground">N/A</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            Requires Calendly/webhook integration
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </div>
+            {!loading && data ? (
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="glass-card border-t-4 border-t-primary">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                                    <Mail className="h-4 w-4" /> Email Capture Rate
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{data.emailCaptureRate}%</div>
+                                <p className="text-xs text-muted-foreground">
+                                    Of users who reached email step and completed
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <Card className="glass-card border-t-4 border-t-accent">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                                    <Users className="h-4 w-4" /> Return Visitors
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{data.returnVisitorCount}</div>
+                                <p className="text-xs text-muted-foreground">
+                                    Founders who retook the audit
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <Card className="glass-card border-t-4 border-t-warning">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                                    <AlertCircle className="h-4 w-4" /> Clarity Call Conversion
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-muted-foreground">N/A</div>
+                                <p className="text-xs text-muted-foreground">
+                                    Requires Calendly/webhook integration
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
 
-                            {data.returnVisitorEmails.length > 0 && (
-                                <Card className="glass-card">
-                                    <CardHeader>
-                                        <CardTitle>Return Visitor Emails</CardTitle>
-                                        <CardDescription>Founders who have taken the audit more than once</CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="flex flex-wrap gap-2">
-                                            {data.returnVisitorEmails.map(email => (
-                                                <span key={email} className="text-sm px-2 py-1 rounded-md bg-muted">
-                                                    {email}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            )}
-
-                            {data.performanceImprovement.length > 0 && (
-                                <Card className="glass-card">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <TrendingUp className="h-5 w-5" /> Performance Improvement
-                                        </CardTitle>
-                                        <CardDescription>1st audit vs audit after implementing program for each user</CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>Email</TableHead>
-                                                    <TableHead>1st Decisions</TableHead>
-                                                    <TableHead>2nd Decisions</TableHead>
-                                                    <TableHead>Delta</TableHead>
-                                                    <TableHead>1st Cost</TableHead>
-                                                    <TableHead>2nd Cost</TableHead>
-                                                    <TableHead>Delta</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {data.performanceImprovement.map((item, i) => (
-                                                    <TableRow key={i}>
-                                                        <TableCell className="font-medium truncate max-w-[180px]" title={item.email}>
-                                                            {item.email}
-                                                        </TableCell>
-                                                        <TableCell>{item.firstAudit.totalDecisions ?? '-'}</TableCell>
-                                                        <TableCell>{item.secondAudit.totalDecisions ?? '-'}</TableCell>
-                                                        <TableCell className={item.delta.totalDecisions < 0 ? 'text-success' : item.delta.totalDecisions > 0 ? 'text-destructive' : ''}>
-                                                            {item.delta.totalDecisions > 0 ? '+' : ''}{item.delta.totalDecisions}
-                                                        </TableCell>
-                                                        <TableCell>{item.firstAudit.totalBottleneckCost != null ? formatCurrency(item.firstAudit.totalBottleneckCost) : '-'}</TableCell>
-                                                        <TableCell>{item.secondAudit.totalBottleneckCost != null ? formatCurrency(item.secondAudit.totalBottleneckCost) : '-'}</TableCell>
-                                                        <TableCell className={item.delta.totalBottleneckCost < 0 ? 'text-success' : item.delta.totalBottleneckCost > 0 ? 'text-destructive' : ''}>
-                                                            {item.delta.totalBottleneckCost > 0 ? '+' : ''}{formatCurrency(item.delta.totalBottleneckCost)}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </CardContent>
-                                </Card>
-                            )}
-                        </>
-                    ) : (
-                        <div className="flex h-[50vh] w-full items-center justify-center">
-                            {loading ? (
-                                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                            ) : (
-                                <div className="text-muted-foreground">No business metrics available.</div>
-                            )}
-                        </div>
+                    {data.returnVisitorEmails.length > 0 && (
+                        <Card className="glass-card">
+                            <CardHeader>
+                                <CardTitle>Return Visitor Emails</CardTitle>
+                                <CardDescription>Founders who have taken the audit more than once</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex flex-wrap gap-2">
+                                    {data.returnVisitorEmails.map(email => (
+                                        <span key={email} className="text-sm px-2 py-1 rounded-md bg-muted">
+                                            {email}
+                                        </span>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
                     )}
+
+                    {data.performanceImprovement.length > 0 && (
+                        <Card className="glass-card">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <TrendingUp className="h-5 w-5" /> Performance Improvement
+                                </CardTitle>
+                                <CardDescription>1st audit vs audit after implementing program for each user</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Email</TableHead>
+                                            <TableHead>1st Decisions</TableHead>
+                                            <TableHead>2nd Decisions</TableHead>
+                                            <TableHead>Delta</TableHead>
+                                            <TableHead>1st Cost</TableHead>
+                                            <TableHead>2nd Cost</TableHead>
+                                            <TableHead>Delta</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {data.performanceImprovement.map((item, i) => (
+                                            <TableRow key={i}>
+                                                <TableCell className="font-medium truncate max-w-[180px]" title={item.email}>
+                                                    {item.email}
+                                                </TableCell>
+                                                <TableCell>{item.firstAudit.totalDecisions ?? '-'}</TableCell>
+                                                <TableCell>{item.secondAudit.totalDecisions ?? '-'}</TableCell>
+                                                <TableCell className={item.delta.totalDecisions < 0 ? 'text-success' : item.delta.totalDecisions > 0 ? 'text-destructive' : ''}>
+                                                    {item.delta.totalDecisions > 0 ? '+' : ''}{item.delta.totalDecisions}
+                                                </TableCell>
+                                                <TableCell>{item.firstAudit.totalBottleneckCost != null ? formatCurrency(item.firstAudit.totalBottleneckCost) : '-'}</TableCell>
+                                                <TableCell>{item.secondAudit.totalBottleneckCost != null ? formatCurrency(item.secondAudit.totalBottleneckCost) : '-'}</TableCell>
+                                                <TableCell className={item.delta.totalBottleneckCost < 0 ? 'text-success' : item.delta.totalBottleneckCost > 0 ? 'text-destructive' : ''}>
+                                                    {item.delta.totalBottleneckCost > 0 ? '+' : ''}{formatCurrency(item.delta.totalBottleneckCost)}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    )}
+                </>
+            ) : (
+                <div className="flex h-[50vh] w-full items-center justify-center">
+                    {loading ? (
+                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                    ) : (
+                        <div className="text-muted-foreground">No business metrics available.</div>
+                    )}
+                </div>
+            )}
         </AdminPageLayout>
     );
 };

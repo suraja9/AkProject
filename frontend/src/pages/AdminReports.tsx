@@ -29,7 +29,7 @@ const AdminReports = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://akproject-l7pz.onrender.com/api/audits');
+            const response = await fetch('http://localhost:5000/api/audits');
             if (!response.ok) throw new Error('Failed to fetch data');
             const data = await response.json();
             setAudits(data);
@@ -107,64 +107,64 @@ const AdminReports = () => {
                 </Button>
             }
         >
-                    {!loading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card className="glass-card">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <FileSpreadsheet className="h-5 w-5" /> Audits Export
-                                    </CardTitle>
-                                    <CardDescription>
-                                        Export all audit data to CSV for external analysis.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-sm text-muted-foreground mb-4">
-                                        {audits.length} audit(s) available for export.
-                                    </p>
-                                    <Button onClick={exportToCSV} className="gap-2" disabled={!audits.length}>
-                                        <Download className="h-4 w-4" />
-                                        Export to CSV
-                                    </Button>
-                                </CardContent>
-                            </Card>
+            {!loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Card className="glass-card">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileSpreadsheet className="h-5 w-5" /> Audits Export
+                            </CardTitle>
+                            <CardDescription>
+                                Export all audit data to CSV for external analysis.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground mb-4">
+                                {audits.length} audit(s) available for export.
+                            </p>
+                            <Button onClick={exportToCSV} className="gap-2" disabled={!audits.length}>
+                                <Download className="h-4 w-4" />
+                                Export to CSV
+                            </Button>
+                        </CardContent>
+                    </Card>
 
-                            <Card className="glass-card">
-                                <CardHeader>
-                                    <CardTitle>Key Metrics Summary</CardTitle>
-                                    <CardDescription>
-                                        Quick overview of your audit data.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <ul className="space-y-2 text-sm">
-                                        <li><span className="text-muted-foreground">Total Audits:</span> {audits.length}</li>
-                                        <li>
-                                            <span className="text-muted-foreground">With Segmentation Data:</span>{' '}
-                                            {audits.filter(a => a.segmentation?.founderRole).length}
-                                        </li>
-                                        <li>
-                                            <span className="text-muted-foreground">Avg Bottleneck Cost:</span>{' '}
-                                            {audits.length
-                                                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
-                                                    .format(audits.reduce((acc, a) => acc + (a.results?.totalBottleneckCost || 0), 0) / audits.length)
-                                                : '-'}
-                                        </li>
-                                        <li>
-                                            <span className="text-muted-foreground">Avg Decisions/Week:</span>{' '}
-                                            {audits.length
-                                                ? Math.round(audits.reduce((acc, a) => acc + (a.results?.totalDecisions || 0), 0) / audits.length)
-                                                : '-'}
-                                        </li>
-                                    </ul>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    ) : (
-                        <div className="flex h-[40vh] w-full items-center justify-center">
-                            <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                        </div>
-                    )}
+                    <Card className="glass-card">
+                        <CardHeader>
+                            <CardTitle>Key Metrics Summary</CardTitle>
+                            <CardDescription>
+                                Quick overview of your audit data.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ul className="space-y-2 text-sm">
+                                <li><span className="text-muted-foreground">Total Audits:</span> {audits.length}</li>
+                                <li>
+                                    <span className="text-muted-foreground">With Segmentation Data:</span>{' '}
+                                    {audits.filter(a => a.segmentation?.founderRole).length}
+                                </li>
+                                <li>
+                                    <span className="text-muted-foreground">Avg Bottleneck Cost:</span>{' '}
+                                    {audits.length
+                                        ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+                                            .format(audits.reduce((acc, a) => acc + (a.results?.totalBottleneckCost || 0), 0) / audits.length)
+                                        : '-'}
+                                </li>
+                                <li>
+                                    <span className="text-muted-foreground">Avg Decisions/Week:</span>{' '}
+                                    {audits.length
+                                        ? Math.round(audits.reduce((acc, a) => acc + (a.results?.totalDecisions || 0), 0) / audits.length)
+                                        : '-'}
+                                </li>
+                            </ul>
+                        </CardContent>
+                    </Card>
+                </div>
+            ) : (
+                <div className="flex h-[40vh] w-full items-center justify-center">
+                    <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                </div>
+            )}
         </AdminPageLayout>
     );
 };

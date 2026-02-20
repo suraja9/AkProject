@@ -74,7 +74,7 @@ export function DecisionAudit({ categories, onUpdate, onNext, onBack }: Decision
         <div className="hidden md:grid grid-cols-12 gap-2 p-4 bg-secondary/30 border-b border-border text-sm font-medium text-muted-foreground">
           <div className="col-span-4">Category</div>
           <div className="col-span-3 text-center">#Decisions</div>
-          <div className="col-span-3 text-center">Could Delegate</div>
+          <div className="col-span-3 text-center">#Decisions you can delegate</div>
           <div className="col-span-2 text-center">Not Sure</div>
         </div>
 

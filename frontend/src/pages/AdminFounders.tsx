@@ -52,7 +52,7 @@ const AdminFounders = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://akproject-l7pz.onrender.com/api/audits');
+            const response = await fetch('http://localhost:5000/api/audits');
             if (!response.ok) throw new Error('Failed to fetch audits');
             const data = await response.json();
             setAudits(data);
@@ -141,37 +141,37 @@ const AdminFounders = () => {
                         size="sm"
                         className="h-9 gap-2 hidden md:flex"
                         onClick={() => {
-                                    if (!filteredFounders.length) return;
-                                    const headers = ["Name", "Email", "Founder Role", "Revenue Range", "Team Size", "Industry", "Total Audits", "Last Active", "Latest Status"];
-                                    const csvContent = [
-                                        headers.join(","),
-                                        ...filteredFounders.map(f =>
-                                            [
-                                                f.name,
-                                                f.email,
-                                                f.segmentation?.founderRole ? formatSegmentationValue("founderRole", f.segmentation.founderRole) : "",
-                                                f.segmentation?.revenueRange ? formatSegmentationValue("revenueRange", f.segmentation.revenueRange) : "",
-                                                f.segmentation?.teamSize ? formatSegmentationValue("teamSize", f.segmentation.teamSize) : "",
-                                                f.segmentation?.industryVertical ? formatSegmentationValue("industryVertical", f.segmentation.industryVertical) : "",
-                                                f.totalAudits,
-                                                new Date(f.lastActive).toLocaleDateString(),
-                                                f.latestStatus
-                                            ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(",")
-                                        )
-                                    ].join("\n");
+                            if (!filteredFounders.length) return;
+                            const headers = ["Name", "Email", "Founder Role", "Revenue Range", "Team Size", "Industry", "Total Audits", "Last Active", "Latest Status"];
+                            const csvContent = [
+                                headers.join(","),
+                                ...filteredFounders.map(f =>
+                                    [
+                                        f.name,
+                                        f.email,
+                                        f.segmentation?.founderRole ? formatSegmentationValue("founderRole", f.segmentation.founderRole) : "",
+                                        f.segmentation?.revenueRange ? formatSegmentationValue("revenueRange", f.segmentation.revenueRange) : "",
+                                        f.segmentation?.teamSize ? formatSegmentationValue("teamSize", f.segmentation.teamSize) : "",
+                                        f.segmentation?.industryVertical ? formatSegmentationValue("industryVertical", f.segmentation.industryVertical) : "",
+                                        f.totalAudits,
+                                        new Date(f.lastActive).toLocaleDateString(),
+                                        f.latestStatus
+                                    ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(",")
+                                )
+                            ].join("\n");
 
-                                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                                    const link = document.createElement("a");
-                                    if (link.download !== undefined) {
-                                        const url = URL.createObjectURL(blob);
-                                        link.setAttribute("href", url);
-                                        link.setAttribute("download", "founders_export.csv");
-                                        link.style.visibility = 'hidden';
-                                        document.body.appendChild(link);
-                                        link.click();
-                                        document.body.removeChild(link);
-                                    }
-                                }}
+                            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                            const link = document.createElement("a");
+                            if (link.download !== undefined) {
+                                const url = URL.createObjectURL(blob);
+                                link.setAttribute("href", url);
+                                link.setAttribute("download", "founders_export.csv");
+                                link.style.visibility = 'hidden';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+                        }}
                     >
                         <Download className="h-4 w-4" />
                         Export CSV
@@ -179,88 +179,88 @@ const AdminFounders = () => {
                 </>
             }
         >
-                    <Card className="glass-card">
-                        <CardContent className="p-0">
-                            <Table>
-                                <TableHeader className="bg-muted/30">
-                                    <TableRow>
-                                        <TableHead className="w-[300px]">Founder</TableHead>
-                                        <TableHead>Role</TableHead>
-                                        <TableHead>Revenue</TableHead>
-                                        <TableHead>Team</TableHead>
-                                        <TableHead>Industry</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead className="text-center">Audits Run</TableHead>
-                                        <TableHead className="text-right">Last Active</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+            <Card className="glass-card">
+                <CardContent className="p-0">
+                    <Table>
+                        <TableHeader className="bg-muted/30">
+                            <TableRow>
+                                <TableHead className="w-[300px]">Founder</TableHead>
+                                <TableHead>Role</TableHead>
+                                <TableHead>Revenue</TableHead>
+                                <TableHead>Team</TableHead>
+                                <TableHead>Industry</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead className="text-center">Audits Run</TableHead>
+                                <TableHead className="text-right">Last Active</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={9} className="h-24 text-center">
+                                        <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
+                                    </TableCell>
+                                </TableRow>
+                            ) : filteredFounders.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={9} className="h-24 text-center text-muted-foreground">
+                                        No founders found matching your search.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                filteredFounders.map((founder) => (
+                                    <TableRow key={founder.email} className="group hover:bg-muted/50 transition-colors">
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                <Avatar className="h-9 w-9 border border-border">
+                                                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                                                        {founder.name.charAt(0)}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="grid gap-0.5">
+                                                    <span className="font-semibold text-sm">{founder.name}</span>
+                                                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                        <Mail className="h-3 w-3" /> {founder.email}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-xs text-muted-foreground">
+                                            {founder.segmentation?.founderRole ? formatSegmentationValue("founderRole", founder.segmentation.founderRole) : "-"}
+                                        </TableCell>
+                                        <TableCell className="text-xs text-muted-foreground">
+                                            {founder.segmentation?.revenueRange ? formatSegmentationValue("revenueRange", founder.segmentation.revenueRange) : "-"}
+                                        </TableCell>
+                                        <TableCell className="text-xs text-muted-foreground">
+                                            {founder.segmentation?.teamSize ? formatSegmentationValue("teamSize", founder.segmentation.teamSize) : "-"}
+                                        </TableCell>
+                                        <TableCell className="text-xs text-muted-foreground">
+                                            {founder.segmentation?.industryVertical ? formatSegmentationValue("industryVertical", founder.segmentation.industryVertical) : "-"}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant={getStatusVariant(founder.latestStatus) as any} className="capitalize shadow-none">
+                                                {founder.latestStatus}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            <span className="font-mono font-medium">{founder.totalAudits}</span>
+                                        </TableCell>
+                                        <TableCell className="text-right text-muted-foreground text-sm">
+                                            {new Date(founder.lastActive).toLocaleDateString()}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="sm" className="h-8 text-xs">
+                                                View Profile
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {loading ? (
-                                        <TableRow>
-                                            <TableCell colSpan={9} className="h-24 text-center">
-                                                <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : filteredFounders.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={9} className="h-24 text-center text-muted-foreground">
-                                                No founders found matching your search.
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : (
-                                        filteredFounders.map((founder) => (
-                                            <TableRow key={founder.email} className="group hover:bg-muted/50 transition-colors">
-                                                <TableCell>
-                                                    <div className="flex items-center gap-3">
-                                                        <Avatar className="h-9 w-9 border border-border">
-                                                            <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                                                                {founder.name.charAt(0)}
-                                                            </AvatarFallback>
-                                                        </Avatar>
-                                                        <div className="grid gap-0.5">
-                                                            <span className="font-semibold text-sm">{founder.name}</span>
-                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                <Mail className="h-3 w-3" /> {founder.email}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">
-                                                    {founder.segmentation?.founderRole ? formatSegmentationValue("founderRole", founder.segmentation.founderRole) : "-"}
-                                                </TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">
-                                                    {founder.segmentation?.revenueRange ? formatSegmentationValue("revenueRange", founder.segmentation.revenueRange) : "-"}
-                                                </TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">
-                                                    {founder.segmentation?.teamSize ? formatSegmentationValue("teamSize", founder.segmentation.teamSize) : "-"}
-                                                </TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">
-                                                    {founder.segmentation?.industryVertical ? formatSegmentationValue("industryVertical", founder.segmentation.industryVertical) : "-"}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant={getStatusVariant(founder.latestStatus) as any} className="capitalize shadow-none">
-                                                        {founder.latestStatus}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    <span className="font-mono font-medium">{founder.totalAudits}</span>
-                                                </TableCell>
-                                                <TableCell className="text-right text-muted-foreground text-sm">
-                                                    {new Date(founder.lastActive).toLocaleDateString()}
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="sm" className="h-8 text-xs">
-                                                        View Profile
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
         </AdminPageLayout>
     );
 };

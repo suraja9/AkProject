@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 const SESSION_KEY = 'audit_session_id';
-const API_URL = 'https://akproject-l7pz.onrender.com/api/session';
+const API_URL = 'http://localhost:5000/api/session';
 
 export const tracker = {
     getSessionId: () => {
