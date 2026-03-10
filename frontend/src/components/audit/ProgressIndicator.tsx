@@ -24,7 +24,7 @@ export function ProgressIndicator({ currentStep, totalSteps, labels }: ProgressI
                   "flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 font-semibold text-sm transition-all duration-300",
                   isActive && "border-accent bg-accent text-accent-foreground shadow-md shadow-accent/30",
                   isComplete && "border-accent bg-accent/15 text-accent",
-                  isPending && "border-muted-foreground/25 text-muted-foreground/50 bg-transparent"
+                  isPending && "border-muted-foreground/25 text-foreground/50 bg-transparent"
                 )}
               >
                 {isComplete ? <Check className="w-5 h-5" strokeWidth={2.5} /> : stepNum}
@@ -33,8 +33,8 @@ export function ProgressIndicator({ currentStep, totalSteps, labels }: ProgressI
                 className={cn(
                   "mt-2 text-[10px] sm:text-xs font-medium hidden sm:block transition-colors",
                   isActive && "text-foreground",
-                  isComplete && "text-muted-foreground",
-                  isPending && "text-muted-foreground/50"
+                  isComplete && "text-foreground/70",
+                  isPending && "text-foreground/45"
                 )}
               >
                 {labels[i]}

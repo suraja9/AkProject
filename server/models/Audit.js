@@ -8,7 +8,8 @@ const auditSchema = new mongoose.Schema({
         founderRole: { type: String },
         revenueRange: { type: String },
         teamSize: { type: String },
-        industryVertical: { type: String }
+        industryVertical: { type: String },
+        otherIndustryVertical: { type: String }
     },
     auditData: {
         decisionCategories: [{

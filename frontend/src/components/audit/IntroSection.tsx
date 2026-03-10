@@ -21,9 +21,6 @@ export function IntroSection({ onStart }: IntroSectionProps) {
       </div>
 
       <div className="max-w-3xl mx-auto text-center animate-fade-up w-full">
-        <span className="inline-flex items-center px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium border border-accent/20 mb-6">
-          For SaaS Founders at $1M–$20M ARR
-        </span>
 
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight mb-5">
           The Founder{" "}
@@ -32,8 +29,8 @@ export function IntroSection({ onStart }: IntroSectionProps) {
           </span>
         </h1>
 
-        <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-xl mx-auto">
-          Find out if you're the reason your SaaS can't scale
+        <p className="text-lg sm:text-xl text-foreground/80 mb-10 max-w-xl mx-auto">
+          Identify your decision debt, calculate your hidden costs, and get a clear picture of what's holding your growth back.
         </p>
 
         <div className="glass-card rounded-2xl p-6 sm:p-8 mb-10 text-left border border-border/80 shadow-lg shadow-primary/5">
@@ -61,7 +58,7 @@ export function IntroSection({ onStart }: IntroSectionProps) {
           <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </Button>
 
-        <p className="mt-5 text-sm text-muted-foreground">
+        <p className="mt-5 text-sm text-foreground/70">
           Takes about 10 minutes
         </p>
       </div>

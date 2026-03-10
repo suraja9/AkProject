@@ -74,8 +74,8 @@ const AdminDashboard = () => {
         setLoading(true);
         try {
             const [auditsRes, sessionsRes] = await Promise.all([
-                fetch('http://localhost:5000/api/audits'),
-                fetch('http://localhost:5000/api/sessions')
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/audits`),
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/sessions`)
             ]);
 
             if (!auditsRes.ok || !sessionsRes.ok) throw new Error('Failed to fetch data');

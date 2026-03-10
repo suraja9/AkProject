@@ -1,6 +1,5 @@
 import {
     Inbox,
-    ShieldCheck,
     Users,
     LayoutDashboard,
     LogOut,
@@ -61,11 +60,10 @@ export function AdminSidebar() {
                 asChild
                 isActive={isActive}
                 tooltip={item.title}
-                className={`h-10 rounded-lg transition-all duration-200 group/button relative ${
-                    isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm border-l-[3px] border-l-sidebar-primary pl-3"
-                        : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:border-l-[3px] hover:border-l-sidebar-primary/50 border-l-[3px] border-l-transparent pl-3"
-                }`}
+                className={`h-10 rounded-lg transition-all duration-200 group/button relative ${isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm border-l-[3px] border-l-sidebar-primary pl-3"
+                    : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/60 hover:border-l-[3px] hover:border-l-sidebar-primary/50 border-l-[3px] border-l-transparent pl-3"
+                    }`}
             >
                 <Link to={item.url} className="flex items-center gap-3">
                     <item.icon className={`h-4 w-4 shrink-0 transition-colors ${isActive ? "text-sidebar-primary" : "text-muted-foreground group-hover/button:text-sidebar-primary"}`} />
@@ -79,8 +77,8 @@ export function AdminSidebar() {
         <Sidebar className="border-r border-sidebar-border bg-sidebar/95 backdrop-blur-sm shadow-[2px_0_24px_-8px_hsl(var(--sidebar-border))]">
             <SidebarHeader className="p-4 pb-3">
                 <div className="flex items-center gap-3 px-1 py-1.5">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sidebar-primary to-amber-600 text-sidebar-primary-foreground shadow-md shadow-sidebar-primary/25 ring-1 ring-white/10">
-                        <ShieldCheck className="size-5" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sidebar-primary to-amber-600 text-sidebar-primary-foreground shadow-md shadow-sidebar-primary/25 ring-1 ring-white/10 overflow-hidden">
+                        <img src="/favicon.ico" alt="AK Logo" className="w-full h-full object-cover" />
                     </div>
                     <div className="grid flex-1 min-w-0 text-left leading-tight">
                         <span className="font-display font-bold text-lg tracking-tight text-sidebar-foreground truncate">

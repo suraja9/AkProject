@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { UserSegmentationData } from "@/types/audit";
 
 interface UserSegmentationProps {
@@ -42,16 +43,12 @@ const TEAM_SIZES = [
 ];
 
 const INDUSTRY_VERTICALS = [
-  { value: "saas", label: "SaaS" },
-  { value: "ecommerce", label: "E-commerce" },
-  { value: "fintech", label: "Fintech" },
   { value: "healthcare", label: "Healthcare" },
-  { value: "marketplace", label: "Marketplace" },
-  { value: "consumer", label: "Consumer" },
-  { value: "enterprise", label: "Enterprise" },
-  { value: "media", label: "Media / Content" },
-  { value: "hardware", label: "Hardware" },
-  { value: "other", label: "Other" },
+  { value: "manufacturing", label: "Manufacturing" },
+  { value: "fintech", label: "Fintech" },
+  { value: "real-estate", label: "Real estate & Construction" },
+  { value: "retail", label: "Retail & E-commerce" },
+  { value: "other", label: "Others" },
 ];
 
 export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegmentationProps) {
@@ -63,7 +60,8 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
     data.founderRole &&
     data.revenueRange &&
     data.teamSize &&
-    data.industryVertical;
+    data.industryVertical &&
+    (data.industryVertical === "other" ? data.otherIndustryVertical && data.otherIndustryVertical.trim() !== "" : true);
 
   const handleSubmit = () => {
     if (isValid) onNext();
@@ -76,7 +74,7 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
           <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
             Tell Us About Your Company
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-foreground/80">
             Help us personalize your audit experience with a few quick details.
           </p>
         </div>
@@ -84,7 +82,7 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
         <div className="glass-card rounded-2xl p-6 sm:p-8 mb-8">
           <div className="space-y-5">
             <div>
-              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              <label className="text-mg font-medium mb-2 block flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-accent" />
                 Founder Role
               </label>
@@ -106,7 +104,7 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              <label className="text-mg font-medium mb-2 block flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-accent" />
                 Revenue Range
               </label>
@@ -128,7 +126,7 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              <label className="text-mg font-medium mb-2 block flex items-center gap-2">
                 <Users className="w-4 h-4 text-accent" />
                 Team Size
               </label>
@@ -150,7 +148,7 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              <label className="text-mg font-medium mb-2 block flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-accent" />
                 Industry Vertical
               </label>
@@ -169,6 +167,16 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
                   ))}
                 </SelectContent>
               </Select>
+              {data.industryVertical === "other" && (
+                <div className="mt-3">
+                  <Input
+                    placeholder="Please specify"
+                    value={data.otherIndustryVertical || ""}
+                    onChange={(e) => handleChange("otherIndustryVertical", e.target.value)}
+                    className="input-field"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -177,7 +185,7 @@ export function UserSegmentation({ data, onUpdate, onNext, onBack }: UserSegment
           <Button
             variant="ghost"
             onClick={onBack}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-foreground/70 hover:text-foreground"
           >
             <ArrowLeft className="mr-2 w-4 h-4" />
             Back

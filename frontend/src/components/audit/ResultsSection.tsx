@@ -100,10 +100,10 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
           <div className="p-3 rounded-xl bg-accent/10 text-accent w-fit mx-auto mb-3">
             <TrendingUp className="w-6 h-6" />
           </div>
-          <p className="text-sm text-muted-foreground mb-1">Decision Load</p>
+          <p className="text-lg text-foreground/75 mb-1">Decision Load</p>
           <p className="text-3xl font-display font-bold">{results.totalDecisions}</p>
-          <p className="text-xs text-muted-foreground">decisions/week</p>
-          <p className={cn("text-sm font-medium mt-2", getDecisionLoadColor())}>
+          <p className="text-ml text-foreground/65">decisions/week</p>
+          <p className={cn("text-ml font-medium mt-2", getDecisionLoadColor())}>
             {getDecisionLoadLabel()}
           </p>
         </div>
@@ -112,10 +112,10 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
           <div className="p-3 rounded-xl bg-danger/10 text-danger w-fit mx-auto mb-3">
             <DollarSign className="w-6 h-6" />
           </div>
-          <p className="text-sm text-muted-foreground mb-1">Total Bottleneck Cost</p>
+          <p className="text-lg text-foreground/75 mb-1">Total Bottleneck Cost</p>
           <p className="text-3xl font-display font-bold">{formatCurrency(results.totalBottleneckCost)}</p>
-          <p className="text-xs text-muted-foreground">/year</p>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-ml text-foreground/65">/year</p>
+          <p className="text-ml text-foreground/75 mt-2">
             Time: {formatCurrency(results.annualCost)} + Delay Tax: {formatCurrency(results.delayTaxAnnual)}
           </p>
         </div>
@@ -124,10 +124,10 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
           <div className="p-3 rounded-xl bg-warning/10 text-warning w-fit mx-auto mb-3">
             <Target className="w-6 h-6" />
           </div>
-          <p className="text-sm text-muted-foreground mb-1">Patterns</p>
+          <p className="text-lg text-foreground/75 mb-1">Patterns</p>
           <p className="text-3xl font-display font-bold">{results.patternsChecked}</p>
-          <p className="text-xs text-muted-foreground">out of 5</p>
-          <p className={cn("text-sm font-medium mt-2",
+          <p className="text-ml text-foreground/65">out of 5</p>
+          <p className={cn("text-ml font-medium mt-2",
             results.patternsChecked <= 1 ? "text-success" :
               results.patternsChecked <= 3 ? "text-warning" : "text-danger"
           )}>
@@ -146,7 +146,7 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
             </div>
             <div>
               <h4 className="font-display text-lg font-semibold mb-2">The Uncomfortable Truth</h4>
-              <p className="text-muted-foreground">
+              <p className="text-foreground/80">
                 Your company's growth ceiling isn't your market, your product, or your team.
                 <span className="text-foreground font-medium"> It's your calendar.</span> Every week you delay fixing this costs you thousands of dollars and weeks of strategic momentum.
               </p>
@@ -157,8 +157,8 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
 
       {/* CTA */}
       <div className="glass-card rounded-2xl p-8 text-center mb-8 animate-fade-up" style={{ animationDelay: "0.4s" }}>
-        <h3 className="font-display text-2xl font-bold mb-3">Ready to Fix Your Bottleneck?</h3>
-        <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+        <h3 className="font-display text-3xl font-bold mb-3">Ready to Fix Your Bottleneck?</h3>
+        <p className="text-foreground/80 text-lg mb-6 max-w-lg mx-auto">
           Book a free 30-minute Bottleneck Clarity Call. We'll review your audit results together, identify your biggest bottleneck pattern, and map out a 90-day plan to fix it.
         </p>
         <Button
@@ -166,20 +166,20 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
           asChild
           className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse-glow"
         >
-          <a href="https://www.anilkarakkattuu.com/clarity" target="_blank" rel="noopener noreferrer">
+          <a href="https://calendly.com/bhaconsultingsolutions/personal-coaching/?month=2026-02" target="_blank" rel="noopener noreferrer">
             <Calendar className="mr-2 w-5 h-5" />
             Book Your Clarity Call
             <ExternalLink className="ml-2 w-4 h-4" />
           </a>
         </Button>
-        <p className="text-sm text-muted-foreground mt-4">
+        <p className="text-ml text-foreground/70 mt-4">
           Free • No obligations • Actionable insights whether you work with me or not
         </p>
       </div>
 
       {/* Footer */}
-      <div className="text-center text-sm text-muted-foreground mb-8">
-        <p className="font-display text-lg font-semibold text-foreground mb-1">Anil Karakkattuu</p>
+      <div className="text-center text-sm text-foreground/70 mb-8">
+        <p className="font-display text-2xl font-semibold text-foreground mb-1">Anil Karakkattuu</p>
         <p>Founder Operating Loop<sup>TM</sup> for Software Founders</p>
         <a
           href="https://www.anilkarakkattuu.com"
@@ -196,7 +196,7 @@ export function ResultsSection({ results, onBack, onRestart }: ResultsSectionPro
         <Button
           variant="ghost"
           onClick={onBack}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-foreground/70 hover:text-foreground"
         >
           <ArrowLeft className="mr-2 w-4 h-4" />
           Back

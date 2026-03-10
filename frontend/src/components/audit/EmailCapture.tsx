@@ -50,7 +50,7 @@ export function EmailCapture({ name, email, onUpdate, onNext, onBack }: EmailCap
           <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
             Let's Get Started
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-md">
             Enter your details below so we can send you a personalized report of your audit results.
           </p>
         </div>
@@ -58,7 +58,7 @@ export function EmailCapture({ name, email, onUpdate, onNext, onBack }: EmailCap
         <div className="glass-card rounded-2xl p-6 sm:p-8 mb-8">
           <div className="space-y-5">
             <div>
-              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              <label className="text-mg font-medium mb-2 block flex items-center gap-2">
                 <User className="w-4 h-4 text-accent" />
                 Your Name
               </label>
@@ -79,7 +79,7 @@ export function EmailCapture({ name, email, onUpdate, onNext, onBack }: EmailCap
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              <label className="text-mg font-medium mb-2 block flex items-center gap-2">
                 <Mail className="w-4 h-4 text-accent" />
                 Email Address
               </label>
@@ -100,7 +100,7 @@ export function EmailCapture({ name, email, onUpdate, onNext, onBack }: EmailCap
             </div>
           </div>
 
-          <p className="text-xs text-muted-foreground mt-4">
+          <p className="text-xs text-foreground/65 mt-4">
             We'll send your audit results to this email. No spam, ever.
           </p>
         </div>
@@ -109,7 +109,7 @@ export function EmailCapture({ name, email, onUpdate, onNext, onBack }: EmailCap
           <Button
             variant="ghost"
             onClick={onBack}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-foreground/70 hover:text-foreground"
           >
             <ArrowLeft className="mr-2 w-4 h-4" />
             Back

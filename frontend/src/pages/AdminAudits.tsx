@@ -73,7 +73,7 @@ const AdminAudits = () => {
     const fetchAudits = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/audits');
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/audits`);
             if (!response.ok) {
                 throw new Error('Failed to fetch audits');
             }
@@ -395,7 +395,7 @@ const AdminAudits = () => {
                                     {/* Patterns */}
                                     {selectedAudit.auditData.patterns && (
                                         <section>
-                                            <h3 className="text-lg font-semibold text-primary mb-4">Identified Patterns</h3>
+                                            <h3 className="text-lg font-semibold text-primary mb-4">Identified Decision Debt Patterns</h3>
                                             <div className="grid gap-3">
                                                 {selectedAudit.auditData.patterns
                                                     .filter(p => p.checked)

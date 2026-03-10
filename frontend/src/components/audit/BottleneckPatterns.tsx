@@ -34,10 +34,10 @@ export function BottleneckPatterns({ patterns, onUpdate, onNext, onBack }: Bottl
           Section 4 of 4
         </span>
         <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
-          The 5 Bottleneck Patterns
+          The 5 Decision Debt Patterns
         </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          Check all that apply to you. The more you check, the more urgent your need for a decision system.
+        <p className="text-foreground/80 max-w-2xl mx-auto">
+          Check each pattern you recognise in yourself. The more you check, the more urgent your need for a decision system.
         </p>
       </div>
 
@@ -66,12 +66,12 @@ export function BottleneckPatterns({ patterns, onUpdate, onNext, onBack }: Bottl
               </div>
               <div className="flex-1">
                 <h3 className={cn(
-                  "font-display text-lg font-semibold mb-2 transition-colors",
+                  "font-display text-2xl font-semibold mb-2 transition-colors",
                   pattern.checked ? "text-accent" : "text-foreground"
                 )}>
                   {pattern.name}
                 </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-foreground/75 text-md leading-relaxed">
                   {pattern.description}
                 </p>
               </div>
@@ -84,11 +84,11 @@ export function BottleneckPatterns({ patterns, onUpdate, onNext, onBack }: Bottl
       <div className="glass-card rounded-2xl p-6 mb-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-muted-foreground mb-1">Patterns Checked</p>
+            <p className="text-sm text-foreground/75 mb-1">Patterns Checked</p>
             <p className="text-4xl font-display font-bold">{checkedCount} out of 5</p>
           </div>
           <div className={cn("px-6 py-3 rounded-xl", statusInfo.bg)}>
-            <p className="text-sm text-muted-foreground mb-0.5">Your Status</p>
+            <p className="text-sm text-foreground/75 mb-0.5">Your Status</p>
             <p className={cn("text-xl font-bold", statusInfo.color)}>{statusInfo.status}</p>
           </div>
         </div>
@@ -96,15 +96,15 @@ export function BottleneckPatterns({ patterns, onUpdate, onNext, onBack }: Bottl
         <div className="mt-6 grid grid-cols-3 gap-3 text-xs">
           <div className="p-3 rounded-lg bg-success/10 text-center">
             <p className="font-semibold text-success">0–1</p>
-            <p className="text-muted-foreground">Manageable</p>
+            <p className="text-foreground/75">Manageable</p>
           </div>
           <div className="p-3 rounded-lg bg-warning/10 text-center">
             <p className="font-semibold text-warning">2–3</p>
-            <p className="text-muted-foreground">System Needed</p>
+            <p className="text-foreground/75">System Needed</p>
           </div>
           <div className="p-3 rounded-lg bg-danger/10 text-center">
             <p className="font-semibold text-danger">4–5</p>
-            <p className="text-muted-foreground">Urgent Overhaul</p>
+            <p className="text-foreground/75">Urgent Overhaul</p>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@ export function BottleneckPatterns({ patterns, onUpdate, onNext, onBack }: Bottl
         <Button
           variant="ghost"
           onClick={onBack}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-foreground/70 hover:text-foreground"
         >
           <ArrowLeft className="mr-2 w-4 h-4" />
           Back

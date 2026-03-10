@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Founder Decision Debt Assessment — Fixed</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --brand: #D35400;
+            --brand-light: #E67E22;
+            --brand-dark: #BA4A00;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --border-color: #ecf0f1;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+            color: var(--text-primary);
+        }
+
+        .option-box {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            user-select: none;
+            background: white;
+        }
+
+        .option-box:hover {
+            background-color: #fff5f0;
+            border-color: var(--brand);
+        }
+
+        .option-box input {
+            margin-right: 12px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-mcq-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .progress {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* radio style */
+        .option-box input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: relative;
+            top: 4px;
+            margin-right: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-box input[type="radio"]:checked {
+            border-color: var(--brand);
+            background-color: var(--brand);
+            box-shadow: 0 0 0 4px rgba(211, 84, 0, 0.1);
+        }
+
+        .option-box input[type="radio"]:checked::before {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 8px;
+            margin: 4px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+
+        .dashboard-card.primary {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f0 100%);
+            border: 2px solid var(--brand);
+        }
+
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 8px 20px rgba(211, 84, 0, 0.25);
+        }
+
+        .score-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .pattern-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin: 8px 0;
+            box-shadow: 0 4px 12px rgba(211, 84, 0, 0.25);
+        }
+
+        .pattern-badge.secondary {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        }
+
+        .stat-bar {
+            background: #f0f0f0;
+            height: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 8px 0;
+            position: relative;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand) 0%, var(--brand-light) 100%);
+            border-radius: 8px;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .info-section {
+            background: white;
+            border-left: 3px solid var(--brand);
+            padding: 14px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .info-section h6 {
+            color: var(--brand);
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .recommendation-list {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(211, 84, 0, 0.2);
+        }
+
+        .recommendation-list ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .recommendation-list li {
+            padding: 10px 0;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+            border: none;
+            padding: 11px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(211, 84, 0, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 100%);
+            box-shadow: 0 4px 14px rgba(211, 84, 0, 0.35);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 11px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .btn-outline-secondary:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: #fff5f0;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 16px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--brand);
+            margin: 8px 0;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* modal */
+        .styled-popup-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .styled-popup {
+            width: 90%;
+            max-width: 840px;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+            display: flex;
+        }
+
+        .popup-left {
+            flex: 1;
+            background: #000;
+        }
+
+        .popup-left img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .popup-right {
+            flex: 1;
+            padding: 32px;
+        }
+
+        .modal-header h6 {
+            color: var(--brand);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .modal-footer .btn-primary {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+            border: none;
+        }
+
+        .small-muted {
+            color: #7f8c8d;
+        }
+
+        footer {
+            text-align: center;
+            margin: 40px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            border-radius: 12px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 24px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Result Page Enhancements */
+        .result-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 32px 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .result-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .result-header p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .score-hero {
+            background: linear-gradient(135deg, #ffffff 0%, #fff9f5 100%);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(211, 84, 0, 0.12);
+            border: 2px solid rgba(211, 84, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--brand) 0%, var(--brand-light) 100%);
+        }
+
+        .score-circle-enhanced {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .score-circle-enhanced::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+        .metric-card-enhanced {
+            background: white;
+            border-radius: 12px;
+            padding: 28px 22px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .metric-card-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--brand);
+        }
+
+        .metric-value-enhanced {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 10px 0;
+            line-height: 1.2;
+        }
+
+        .pattern-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            height: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .pattern-card.primary {
+            border: 2px solid #F70000;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+        }
+
+        .pattern-card.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #F70000 0%, #c82333 100%);
+        }
+
+        .pattern-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .pattern-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .pattern-card.primary .pattern-icon {
+            background: linear-gradient(135deg, #F70000 0%, #c82333 100%);
+            color: white;
+        }
+
+        .pattern-card:not(.primary) .pattern-icon {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid var(--brand);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            transition: all 0.2s ease;
+        }
+
+        .info-box:hover {
+            background: #f0f0f0;
+            transform: translateX(4px);
+        }
+
+        .info-box h6 {
+            color: var(--brand);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box p,
+        .info-box ul {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .info-box ul {
+            padding-left: 20px;
+        }
+
+        .info-box ul li {
+            margin: 6px 0;
+        }
+
+        .action-box {
+            background: linear-gradient(135deg, #fff9f5 0%, #ffffff 100%);
+            border: 2px solid var(--brand);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .action-box h6 {
+            color: var(--brand);
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-box p {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .pattern-breakdown-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .pattern-breakdown-card h5 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pattern-item {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .pattern-item:hover {
+            border-color: var(--brand);
+            box-shadow: 0 8px 24px rgba(211, 84, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* PDF-only sections (hidden in web UI) */
+        .pdf-only {
+            display: none;
+        }
+
+        body.pdf-mode .pdf-only {
+            display: block;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+            border-radius: 20px;
+            padding: 48px 32px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(211, 84, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--brand);
+            font-weight: 700;
+            padding: 16px 40px;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+            background: #fff9f5;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .severity-high {
+            background: linear-gradient(135deg, #F70000 0%, #c82333 100%);
+            color: white;
+        }
+
+        .severity-moderate {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .severity-low {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-light text-dark">
+
+    <div class="py-3 text-center">
+        <h1 class="fw-bold">Founder Decision Debt Assessment</h1>
+        <p class="text-muted fs-4 mb-0">Diagnose the exact decision pattern draining profit and what to fix first.</p>
+    </div>
+
+    <div class="container content-mcq-main mb-5" id="assessment-container"></div>
+
+    <!-- Email Modal (styled) -->
+    <div class="modal" id="emailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="styled-popup-wrapper" style="display:none;" id="styledWrapper">
+                <div class="styled-popup">
+                    <div class="popup-left">
+                        <img src="https://anilkarakkattuu.com/wp-content/uploads/2025/07/IOS.png" alt="visual" />
+                    </div>
+                    <div class="popup-right">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6>Unlock your inner operating loop</h6>
+                                <h5 class="modal-title">Download your Decision Debt report</h5>
+                            </div>
+                            <div class="modal-body">
+                                <input type="email" id="userEmail" class="form-control"
+                                    placeholder="Enter your email" />
+                                <div id="emailError" class="text-danger mt-2" style="display:none;">Please enter a valid
+                                    email.</div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" id="cancelEmail">Cancel</button>
+                                <button class="btn btn-primary" id="submitEmail">Download PDF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        /*
+          Full Decision Debt system using the 10 diagnostic questions and pattern mapping from the uploaded PDF.
+          This file includes fixes:
+            - Correct primary/secondary selection with tie-break hierarchy
+            - Severity classification per pattern
+            - Type mapping (Reactive Operator, Fragmented Founder, etc.)
+            - Correct PDF export using finalResult object
+          Source guidance: provided Decision Debt PDF. fileciteturn0file0
+        */
+
+        const container = document.getElementById('assessment-container');
+
+        const questions = [
+            { id: 1, category: "Reactive Decision-Making", question: "How often do you make decisions without clear criteria, just to keep things moving?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 2, category: "Fragmentation", question: "How often do minor decisions interrupt major ones and break your focus?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 3, category: "Reversal / Inconsistency", question: "How often do you change your mind after giving your team direction?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 4, category: "Overcommitment", question: "How often do you say yes to things you don't have the bandwidth to manage?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 5, category: "Speed Mismatch", question: "How often do decisions sit in your head for days before you make them?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 6, category: "Reactive Decision-Making", question: "How often do you make important decisions when you're mentally tired?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 7, category: "Overcommitment / Dependency", question: "How often does your team wait for you because they aren't confident deciding without you?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 8, category: "Reversal / Inconsistency", question: "How often do you skip reviewing the downstream impact of your decisions?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 9, category: "Fragmentation", question: "How often do you switch priorities because something feels urgent, even when the plan was clear?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 10, category: "Speed Mismatch", question: "How often do you make decisions faster than your team can implement them?", options: ["1 – Never", "2 – Rarely", "3 – Sometimes", "4 – Often", "5 – Almost daily"], type: "scale" },
+            { id: 11, category: "Profile", question: "Which best describes your current situation?", options: ["Founder", "Co-founder", "CEO"], type: "choice" },
+            { id: 12, category: "Profile", question: "What is your current revenue?", options: ["<$1M", "$1M - $5M", "$6M- $10M", "$11M - $15M", ">$15M"], type: "choice" },
+            { id: 13, category: "Goals", question: "What is the most important desired outcome for you to achieve in the next 90 days?", options: [], type: "text" },
+            { id: 14, category: "Challenges", question: "What is the obstacle that you think is stopping you or what have you tried that hasn't worked in the past?", options: [], type: "text" },
+            { id: 15, category: "Additional Info", question: "Is there anything else that you think we need to know about?", options: [], type: "text" }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {}; // questionId => value (1..5)
+        let userInfo = { name: '', email: '' }; // Store user name and email
+
+        /* ----- Scoring helpers & mappings ----- */
+
+        const patternHierarchy = [
+            "Reactive Decision-Making",
+            "Fragmentation",
+            "Overcommitment / Dependency",
+            "Reversal / Inconsistency",
+            "Speed Mismatch"
+        ];
+
+        const patternToType = {
+            "Reactive Decision-Making": "Reactive Operator",
+            "Fragmentation": "Fragmented Founder",
+            "Reversal / Inconsistency": "Inconsistent Decider",
+            "Overcommitment / Dependency": "Overcommitted Bottleneck",
+            "Speed Mismatch": "Speed Mismatch Founder"
+        };
+
+        function computePatternScores() {
+            const mapping = {
+                "Reactive Decision-Making": [1, 6],
+                "Fragmentation": [2, 9],
+                "Reversal / Inconsistency": [3, 8],
+                "Overcommitment / Dependency": [4, 7],
+                "Speed Mismatch": [5, 10]
+            };
+            const patternScores = {};
+            for (const [pattern, qids] of Object.entries(mapping)) {
+                let total = 0;
+                qids.forEach(qid => { total += (answers[qid] || 0); });
+                patternScores[pattern] = total; // range 0-10 (0 if skipped)
+            }
+            return patternScores;
+        }
+
+        function computeOverallPercentage() {
+            // Only count scale questions (1-10) for overall score
+            const scaleQuestions = questions.filter(q => q.type === 'scale');
+            let sum = 0;
+            scaleQuestions.forEach(q => {
+                const val = answers[q.id];
+                if (typeof val === 'number') {
+                    sum += val || 0;
+                }
+            });
+            const max = scaleQuestions.length * 5;
+            const percent = Math.round((sum / max) * 100);
+            return { sum, percent, max };
+        }
+
+        function determinePrimaryPattern(patternScores) {
+            const minScore = Math.min(...Object.values(patternScores));
+            const tied = Object.entries(patternScores)
+                .filter(([p, s]) => s === minScore)
+                .map(([p]) => p);
+            if (tied.length === 1) return tied[0];
+            for (let h of patternHierarchy) {
+                if (tied.includes(h)) return h;
+            }
+            return tied[0];
+        }
+
+        function determineSecondaryPattern(patternScores, primary) {
+            const entries = Object.entries(patternScores)
+                .filter(([p]) => p !== primary)
+                .sort((a, b) => b[1] - a[1]); // Sort descending to get second highest
+            return entries.length > 0 ? entries[0][0] : primary;
+        }
+
+        function classifySeverity(score) {
+            if (score >= 8 && score <= 10) return "HIGH";
+            if (score >= 5 && score <= 7) return "MODERATE";
+            if (score >= 2 && score <= 4) return "LOW";
+            return "LOW"; // 0-1 also treated as LOW
+        }
+
+        /* ----- Rendering ----- */
+
+        function renderWelcomeScreen() {
+            container.innerHTML = `
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <p class="text-center mb-4" style="color: var(--text-secondary); font-size: 1.05rem;">
+          Before we begin, please provide your name and email address to get started.
+        </p>
+        <form id="welcome-form" onsubmit="handleWelcomeSubmit(event)">
+          <div class="mb-3">
+            <label for="userName" class="form-label" style="font-weight: 600; color: var(--text-primary);">Full Name <span style="color: #F70000;">*</span></label>
+            <input type="text" id="userName" class="form-control" placeholder="Enter your full name" required 
+                   style="border: 2px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 0.95rem;"
+                   value="${userInfo.name}">
+          </div>
+          <div class="mb-4">
+            <label for="userEmailWelcome" class="form-label" style="font-weight: 600; color: var(--text-primary);">Email Address <span style="color: #F70000;">*</span></label>
+            <input type="email" id="userEmailWelcome" class="form-control" placeholder="Enter your email address" required
+                   style="border: 2px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 0.95rem;"
+                   value="${userInfo.email}">
+            <div id="welcomeEmailError" class="text-danger mt-2" style="display:none;">Please enter a valid email address.</div>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg" style="padding: 12px 32px; font-size: 1.05rem;">
+              Start Assessment →
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+        }
+
+        function handleWelcomeSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('userName').value.trim();
+            const email = document.getElementById('userEmailWelcome').value.trim();
+            const errorDiv = document.getElementById('welcomeEmailError');
+
+            // Validate email
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Validate name
+            if (!name) {
+                alert('Please enter your name.');
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+
+            // Store user info
+            userInfo.name = name;
+            userInfo.email = email;
+
+            // Start the questionnaire
+            currentQuestion = 0;
+            renderQuestion();
+        }
+
+        function saveSubmissionToWordPress() {
+            // hard validation: all 15 answers must exist
+            for (let i = 1; i <= 15; i++) {
+                if (
+                    answers[i] === undefined ||
+                    answers[i] === null ||
+                    answers[i] === ''
+                ) {
+                    alert(`Question ${i} is missing. Please complete all questions.`);
+                    return;
+                }
+            }
+
+            fetch('/wp-admin/admin-ajax.php?action=save_decision_debt_v2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    answers: answers,
+                    finalResult: window.finalResult
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (!res.success) {
+                        console.error(res);
+                        alert('Submission failed. Check console.');
+                    } else {
+                        console.log('Saved successfully');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Network error while saving submission');
+                });
+        }
+
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            let formContent = '';
+
+            if (q.type === 'text') {
+                formContent = `
+                    <textarea id="text-answer" class="form-control" rows="5" placeholder="Type your answer here..." style="border: 2px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 0.95rem;">${answers[q.id] || ''}</textarea>
+                `;
+            } else if (q.type === 'choice') {
+                formContent = q.options.map((opt, idx) => `
+                    <div class="option-box mb-2">
+                        <label style="width:100%; display:flex; align-items:flex-start;">
+                            <input type="radio" name="option" value="${opt}" onchange="handleOptionSelect('${opt}')" ${answers[q.id] === opt ? 'checked' : ''}/>
+                            <div>${opt}</div>
+                        </label>
+                    </div>
+                `).join('');
+            } else {
+                // scale type (1-5)
+                formContent = q.options.map((opt, idx) => `
+                    <div class="option-box mb-2">
+                        <label style="width:100%; display:flex; align-items:flex-start;">
+                            <input type="radio" name="option" value="${idx + 1}" onchange="handleOptionSelect(${idx + 1})" ${answers[q.id] == idx + 1 ? 'checked' : ''}/>
+                            <div>${opt.replace(/^[0-9]\s–\s/, '')}</div>
+                        </label>
+                    </div>
+                `).join('');
+            }
+
+            container.innerHTML = `
+    <div class="card shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="mb-0 fw-bold" style="font-size: 2.8rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase;">
+            Question ${currentQuestion + 1} of ${questions.length}
+          </h2>
+        </div>
+        <div class="text-end">
+          <span style="font-size: 2rem; font-weight: 800;">${Math.round(((currentQuestion + 1) / questions.length) * 100)}%</span><br/>
+          <span class="small-muted" style="font-size: 1.2rem; font-weight: 700;">Complete</span>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: ${(currentQuestion + 1) / questions.length * 100}%; background-color: var(--brand);"></div>
+      </div>
+
+      <div class="card-body">
+        <h5>${q.question}</h5>
+        <form id="options-form" class="mt-4">
+          ${formContent}
+        </form>
+
+        <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+          <button class="btn btn-outline-secondary" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>← Previous</button>
+          ${q.type === 'text' ? `<button class="btn btn-primary" id="text-answer-btn">Continue</button>` : `<button class="btn btn-primary" id="next-question-btn" onclick="goToNextQuestion()" ${answers[q.id] !== undefined && answers[q.id] !== '' ? '' : 'disabled'}>Next →</button>`}
+        </div>
+      </div>
+    </div>
+  `;
+        }
+
+        function handleOptionSelect(selected) {
+            const q = questions[currentQuestion];
+            // For scale questions, parse as int; for choice questions, keep as string
+            if (q.type === 'scale') {
+                answers[q.id] = parseInt(selected);
+            } else {
+                answers[q.id] = selected;
+            }
+            // Enable Next button so user can click it to proceed
+            const nextBtn = document.getElementById('next-question-btn');
+            if (nextBtn) nextBtn.disabled = false;
+        }
+
+        function goToNextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                computeAndShowResults();
+            }
+        }
+
+
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'text-answer-btn') {
+                handleTextAnswer();
+            }
+        });
+
+
+        function handleTextAnswer() {
+            const q = questions[currentQuestion];
+            const textArea = document.getElementById('text-answer');
+            if (textArea) {
+                answers[q.id] = textArea.value.trim();
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    renderQuestion();
+                } else {
+                    computeAndShowResults();
+                }
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function skipQuestion() {
+            const q = questions[currentQuestion];
+            // For scale questions, use 0; for text/choice, use empty string
+            if (q.type === 'scale') {
+                answers[q.id] = 0;
+            } else {
+                answers[q.id] = '';
+            }
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                computeAndShowResults();
+            }
+        }
+
+        function finishWithoutAnswer() {
+            // allow finishing on last screen even if unanswered
+            computeAndShowResults();
+        }
+
+        /* ----- Content for each pattern (TYPE 1-5 format) ----- */
+        function getTypeContent() {
+            return {
+                "Reactive Decision-Making": {
+                    title: "Reactive Decision-Making",
+                    meaning: "Decisions are being made to relieve pressure, not to create progress.",
+                    happening: [
+                        "Decisions are made quickly to keep things moving",
+                        "Direction changes after work starts",
+                        "You spend time correcting and clarifying"
+                    ],
+                    why: "Decisions are made under pressure without clear criteria.",
+                    profit: [
+                        "Rework increases cost",
+                        "Execution cycles slow",
+                        "Output does not compound"
+                    ],
+                    fixFirst: "Reduce decision volume before trying to increase speed.",
+                    nextStep: "Stabilize this decision pattern."
+                },
+                "Fragmentation": {
+                    title: "Fragmentation",
+                    meaning: "Your attention is being pulled away from profit-critical decisions.",
+                    happening: [
+                        "Small decisions interrupt big ones",
+                        "Focus breaks throughout the day",
+                        "Important decisions get delayed"
+                    ],
+                    why: "Your decision flow is constantly interrupted.",
+                    profit: [
+                        "High-impact decisions take longer",
+                        "Momentum breaks repeatedly",
+                        "10–20 hours per week are lost"
+                    ],
+                    fixFirst: "Protect focus before optimizing execution.",
+                    nextStep: "Eliminate fragmentation in decision flow."
+                },
+                "Reversal / Inconsistency": {
+                    title: "Inconsistency",
+                    meaning: "Decisions do not stick long enough to compound.",
+                    happening: [
+                        "Direction changes after alignment",
+                        "Teams hesitate before executing",
+                        "Work gets revisited or undone"
+                    ],
+                    why: "Decisions fluctuate based on pressure and energy.",
+                    profit: [
+                        "Execution slows",
+                        "Accountability drops",
+                        "Cost per outcome rises"
+                    ],
+                    fixFirst: "Stabilize decisions before improving execution speed.",
+                    nextStep: "Build consistency into decision flow."
+                },
+                "Overcommitment / Dependency": {
+                    title: "Dependency",
+                    meaning: "Too many decisions depend on you to move forward.",
+                    happening: [
+                        "Everything routes through you",
+                        "Team waits for approval",
+                        "You are constantly context-switching"
+                    ],
+                    why: "Decision ownership is unclear under pressure.",
+                    profit: [
+                        "Execution bottlenecks",
+                        "Output scales slower than cost",
+                        "Founder fatigue lowers decision quality"
+                    ],
+                    fixFirst: "Reduce dependency before delegating execution.",
+                    nextStep: "Remove yourself as the decision choke point."
+                },
+                "Speed Mismatch": {
+                    title: "Speed Mismatch",
+                    meaning: "Decisions move faster than execution can absorb.",
+                    happening: [
+                        "Decisions stack up faster than work completes",
+                        "Priorities shift before execution finishes",
+                        "Teams feel overloaded"
+                    ],
+                    why: "Decision pace is not aligned with execution capacity.",
+                    profit: [
+                        "Rework and waste increase",
+                        "High-value initiatives stall",
+                        "Efficiency drops as speed rises"
+                    ],
+                    fixFirst: "Align decision pace with execution capacity.",
+                    nextStep: "Sync decision speed with team throughput."
+                }
+            };
+        }
+
+        /* ----- Main result computation (NEW LOGIC) ----- */
+        function computeAndShowResults() {
+            const patternScores = computePatternScores();
+            const overall = computeOverallPercentage();
+
+            // Find the highest score (only highest score matters)
+            const highestScore = Math.max(...Object.values(patternScores));
+            const highestScorePattern = Object.entries(patternScores).find(([p, s]) => s === highestScore)[0];
+
+            const primaryPattern = highestScorePattern;
+            const secondaryPattern = determineSecondaryPattern(patternScores, primaryPattern);
+
+            const primaryType = patternToType[primaryPattern];
+            const secondaryType = patternToType[secondaryPattern];
+
+            const typeContent = getTypeContent();
+            const primaryContent = typeContent[primaryPattern];
+            const secondaryContent = typeContent[secondaryPattern];
+
+            // Determine display mode based on highest score
+            let displayMode;
+            if (highestScore >= 8 && highestScore <= 10) {
+                displayMode = 'both'; // Show both primary and secondary
+            } else if (highestScore >= 5 && highestScore <= 7) {
+                displayMode = 'both'; // Show both primary and secondary
+            } else if (highestScore >= 3 && highestScore <= 4) {
+                displayMode = 'caution'; // Show caution warning
+            } else {
+                displayMode = 'perfect'; // Everything is perfect (1-2)
+            }
+
+            // Determine severity (kept for other UI logic if needed)
+            const highestSeverity = classifySeverity(highestScore);
+
+            // Determine overall score circle color based on percentage
+            let overallCircleColor;
+            if (overall.percent >= 0 && overall.percent <= 40) {
+                overallCircleColor = 'linear-gradient(135deg, #F70000 0%, #c82333 100%)';
+            } else if (overall.percent > 40 && overall.percent <= 80) {
+                overallCircleColor = 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)';
+            } else {
+                overallCircleColor = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+            }
+
+            // Build result page content based on TYPE 1-5 format
+            let resultPageHTML = '';
+
+            if (displayMode === 'perfect') {
+                // Score 1-2: Everything is perfect
+                resultPageHTML = `
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="pattern-card primary" style="text-align: center; padding: 48px 32px;">
+          <div style="font-size: 4rem; margin-bottom: 24px;">✅</div>
+          <h3 style="font-weight: 800; color: var(--text-primary); margin-bottom: 16px; font-size: 2rem;">Everything is Perfect</h3>
+          <p style="font-size: 1.2rem; color: var(--text-secondary); line-height: 1.6; max-width: 600px; margin: 0 auto;">
+            No need to be worried of anything. Your decision-making patterns are healthy and well-structured.
+          </p>
+        </div>
+      </div>
+    </div>`;
+            } else if (displayMode === 'caution') {
+                // Score 3-4: Show caution warning
+                resultPageHTML = `
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="pattern-card primary" style="border-color: #f39c12; background: linear-gradient(135deg, #fff9f5 0%, #ffffff 100%);">
+          <div class="pattern-header">
+            <div class="pattern-icon" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">⚠️</div>
+            <div>
+              <h4 class="mb-0" style="font-weight: 800; color: var(--text-primary); font-size: 1.5rem;">Caution</h4>
+              <p class="mb-0 mt-2" style="color: var(--text-secondary);">Score: ${highestScore} / 10 - Severity: ${highestSeverity}</p>
+            </div>
+          </div>
+          <div class="info-box" style="border-left-color: #f39c12; margin-top: 20px;">
+            <h6 style="color: #f39c12;">⚠️ Pattern Detected</h6>
+            <p style="font-size: 1.05rem; line-height: 1.6;">
+              Your decision pattern shows up under pressure. While not structural, it's worth monitoring to prevent escalation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+            } else {
+                // Score 5-7 (primary only) or 8-10 (both primary and secondary)
+                resultPageHTML = `
+    <!-- Primary Pattern Result Page -->
+    <div class="row mb-4 ${displayMode === 'both' ? 'g-4' : ''}">
+      <div class="${displayMode === 'both' ? 'col-lg-6' : 'col-12'}">
+        <div class="pattern-card primary">
+          <div class="pattern-header">
+            <div class="pattern-icon">🎯</div>
+            <div>
+              <h4 class="mb-0" style="font-weight: 800; color: var(--text-primary); font-size: 1.5rem;">${primaryContent.title}</h4>
+              <p class="mb-0 mt-2" style="color: var(--text-secondary); font-size: 0.95rem;">Score: ${patternScores[primaryPattern]} / 10</p>
+            </div>
+          </div>
+          
+          <div class="mt-3 mb-3">
+            <span class="severity-badge severity-${highestSeverity.toLowerCase()}" style="font-size: 0.9rem; padding: 8px 16px; background: linear-gradient(135deg, #F70000 0%, #c82333 100%);">Severity: ${highestSeverity}</span>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #F70000;">
+            <h6 style="color: #F70000;">What this means</h6>
+            <p>${primaryContent.meaning}</p>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #F70000;">
+            <h6 style="color: #F70000;">What's happening</h6>
+            <ul>
+              ${primaryContent.happening.map(i => `<li>${i}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #F70000;">
+            <h6 style="color: #F70000;">Why it's happening</h6>
+            <p>${primaryContent.why}</p>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #F70000;">
+            <h6 style="color: #F70000;">How this hits profit</h6>
+            <ul>
+              ${primaryContent.profit.map(i => `<li>${i}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <div class="action-box" style="border-color: #F70000;">
+            <h6 style="color: #F70000;">What to fix first</h6>
+            <p>${primaryContent.fixFirst}</p>
+          </div>
+          
+          <div class="action-box" style="border-color: #F70000; margin-top: 16px;">
+            <h6 style="color: #F70000;">Next step</h6>
+            <p>${primaryContent.nextStep}</p>
+          </div>
+        </div>
+      </div>
+      
+      ${displayMode === 'both' ? `
+      <!-- Secondary Pattern Result Page -->
+      <div class="col-lg-6">
+        <div class="pattern-card">
+          <div class="pattern-header">
+            <div class="pattern-icon">📊</div>
+            <div>
+              <h4 class="mb-0" style="font-weight: 800; color: var(--text-primary); font-size: 1.5rem;">${secondaryContent.title}</h4>
+              <p class="mb-0 mt-2" style="color: var(--text-secondary); font-size: 0.95rem;">Score: ${patternScores[secondaryPattern]} / 10</p>
+            </div>
+          </div>
+          
+          <div class="mt-3 mb-3">
+            <span class="severity-badge severity-${classifySeverity(patternScores[secondaryPattern]).toLowerCase()}" style="font-size: 0.9rem; padding: 8px 16px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">Severity: ${classifySeverity(patternScores[secondaryPattern])}</span>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #f39c12;">
+            <h6 style="color: #f39c12;">What this means</h6>
+            <p>${secondaryContent.meaning}</p>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #f39c12;">
+            <h6 style="color: #f39c12;">What's happening</h6>
+            <ul>
+              ${secondaryContent.happening.map(i => `<li>${i}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #f39c12;">
+            <h6 style="color: #f39c12;">Why it's happening</h6>
+            <p>${secondaryContent.why}</p>
+          </div>
+          
+          <div class="info-box" style="border-left-color: #f39c12;">
+            <h6 style="color: #f39c12;">How this hits profit</h6>
+            <ul>
+              ${secondaryContent.profit.map(i => `<li>${i}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <div class="action-box" style="border-color: #f39c12; background: linear-gradient(135deg, #fff9f5 0%, #ffffff 100%);">
+            <h6 style="color: #f39c12;">What to fix first</h6>
+            <p>${secondaryContent.fixFirst}</p>
+          </div>
+          
+          <div class="action-box" style="border-color: #f39c12; background: linear-gradient(135deg, #fff9f5 0%, #ffffff 100%); margin-top: 16px;">
+            <h6 style="color: #f39c12;">Next step</h6>
+            <p>${secondaryContent.nextStep}</p>
+          </div>
+        </div>
+      </div>
+      ` : ''}
+    </div>`;
+            }
+
+            container.innerHTML = `
+    <!-- Header Section -->
+    <div class="result-header text-center">
+      <h2>${userInfo.name ? userInfo.name + "'s " : ''}Decision Debt Diagnostic Report</h2>
+      <p class="fs-5">Comprehensive analysis of your decision-making patterns and actionable insights</p>
+    </div>
+
+    <!-- Main Score Section -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="pattern-breakdown-card">
+          <h5 font-size="30px">
+            Complete Pattern Breakdown
+          </h5>
+          <div class="row g-3">
+            ${[
+                    'Reactive Decision-Making',
+                    'Fragmentation',
+                    'Reversal / Inconsistency',
+                    'Overcommitment / Dependency',
+                    'Speed Mismatch'
+                ].map((p) => {
+                    const s = patternScores[p];
+                    const percentage = (s / 10) * 100;
+                    const severity = classifySeverity(s);
+                    let barColor, badgeClass;
+                    if (severity === 'HIGH') {
+                        barColor = 'linear-gradient(90deg, #F70000 0%, #c82333 100%)';
+                        badgeClass = 'severity-high';
+                    } else if (severity === 'MODERATE') {
+                        barColor = 'linear-gradient(90deg, #f39c12 0%, #e67e22 100%)';
+                        badgeClass = 'severity-moderate';
+                    } else {
+                        barColor = 'linear-gradient(90deg, #27ae60 0%, #2ecc71 100%)';
+                        badgeClass = 'severity-low';
+                    }
+                    const patternDescriptions = {
+                        'Reactive Decision-Making': 'Decisions are being made to relieve pressure, not to create progress.',
+                        'Fragmentation': 'Your attention is being pulled away from profit-critical decisions.',
+                        'Reversal / Inconsistency': 'Decisions do not stick long enough to compound.',
+                        'Overcommitment / Dependency': 'Too many decisions depend on you to move forward.',
+                        'Speed Mismatch': 'Decisions move faster than execution can absorb.'
+                    };
+                    return `
+              <div class="col-md-6 col-lg-4">
+                <div class="pattern-item">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong style="color: var(--text-primary); font-size: 0.95rem; font-weight: 700;">${p}</strong>
+                    <span class="severity-badge ${badgeClass}" style="font-size: 0.75rem; padding: 4px 10px;">${s}/10</span>
+                  </div>
+                  <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;">${patternDescriptions[p] || ''}</p>
+                  <div class="stat-bar" style="height: 8px; margin-bottom: 8px; border-radius: 10px;">
+                    <div class="stat-bar-fill" style="width: ${percentage}%; background: ${barColor}; border-radius: 10px;"></div>
+                  </div>
+                  <small style="color: var(--text-secondary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Severity: ${severity}</small>
+                </div>
+              </div>
+            `;
+                }).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    ${resultPageHTML}
+
+    <!-- CTA Section (Always visible) -->
+    <div class="row">
+      <div class="col-12">
+        <div class="cta-section">
+          <a class="cta-button" href="https://calendly.com/bhaconsultingsolutions/personal-coaching/?month=2026-02" target="_blank" rel="noopener noreferrer" style="display: inline-block; text-decoration: none; margin-bottom: 16px;">Discuss My Results</a>
+          <p style="color: rgba(255,255,255,0.95); font-size: 1.1rem; margin-bottom: 16px; position: relative; z-index: 1;">Get clarity on what matters now and what can wait.</p>
+          <div style="display: flex; flex-direction: column; gap: 16px; align-items: center; margin-bottom: 16px; position: relative; z-index: 1;">
+            <a class="cta-button" href="/" style="display: inline-block; text-decoration: none; background: #2c3e50; color: white;">Calculate the hidden cost of your bottleneck decisions</a>
+          </div>
+          <a href="#" onclick="downloadPDFAndSendEmail(event); return false;" style="color: white; text-decoration: underline; font-size: 1.1rem; font-weight: 600; position: relative; z-index: 1; cursor: pointer;">Download Report</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+            window.finalResult = {
+                patternScores,
+                overall,
+                primary: { name: primaryType, rawPattern: primaryPattern, score: patternScores[primaryPattern], content: primaryContent },
+                secondary: { name: secondaryType, rawPattern: secondaryPattern, score: patternScores[secondaryPattern], content: secondaryContent }
+            };
+
+            // 🔥 SAVE TO WORDPRESS (FIX)
+            saveSubmissionToWordPress();
+
+            // Send one email to admin with PDF attached (after a short delay so the results DOM is ready for PDF generation)
+            setTimeout(function () {
+                generateAndDownloadPDF(userInfo.email || '', true);
+            }, 1200);
+        }
+
+        /* ----- Recommendations & PDF generation ----- */
+        function getRecommendations(percent) {
+            if (percent >= 85) return ["Document winning decision routines", "Mentor leaders to scale your frameworks", "Build accountability to lock gains"];
+            if (percent >= 70) return ["Strengthen weaker pattern blocks", "Introduce routine decision reviews", "Train team to own execution"];
+            if (percent >= 55) return ["Start daily clarity rituals", "Create simple decision templates", "Audit priority leaks"];
+            return ["Start with core reset rituals", "Seek focused coaching", "Create a triage decision system today"];
+        }
+
+        function showEmailModal() {
+            // Pre-fill email if we have it
+            const emailInput = document.getElementById('userEmail');
+            if (emailInput && userInfo.email) {
+                emailInput.value = userInfo.email;
+            }
+            document.getElementById('styledWrapper').style.display = 'flex';
+        }
+
+        function downloadPDFDirectly() {
+            generateAndDownloadPDF(null);
+        }
+
+        async function downloadPDFAndSendEmail(event) {
+            event.preventDefault();
+            // Use stored email or prompt for email
+            const email = userInfo.email || prompt('Please enter your email address to receive the report:');
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            await generateAndDownloadPDF(email);
+        }
+
+        function getScoreBandForPDF(patternScores) {
+            if (!patternScores) return null;
+            const values = Object.values(patternScores).filter(v => typeof v === 'number');
+            if (values.length === 0) return null;
+            const maxScore = Math.max(...values);
+            if (maxScore >= 8 && maxScore <= 10) return { minScoreToInclude: 8, label: 'HIGH (8–10)' };
+            if (maxScore >= 5 && maxScore <= 7) return { minScoreToInclude: 5, label: 'MODERATE (5–7)' };
+            return null; // caution/perfect: no extra pattern cards needed
+        }
+
+        function upsertPdfExtraPatterns(containerEl, frag) {
+            if (!containerEl || !frag || !frag.patternScores) return null;
+
+            const band = getScoreBandForPDF(frag.patternScores);
+            if (!band) return null;
+
+            const primary = frag.primary && frag.primary.rawPattern;
+            const secondary = frag.secondary && frag.secondary.rawPattern;
+
+            const inBand = Object.entries(frag.patternScores)
+                .filter(([, s]) => typeof s === 'number' && s >= band.minScoreToInclude)
+                .sort((a, b) => b[1] - a[1]);
+
+            const extras = inBand.filter(([p]) => p !== primary && p !== secondary);
+            if (extras.length === 0) return null; // nothing beyond the dashboard cap
+
+            // Create or update the PDF-only wrapper
+            let wrapper = document.getElementById('pdf-extra-patterns');
+            if (!wrapper) {
+                wrapper = document.createElement('div');
+                wrapper.id = 'pdf-extra-patterns';
+                wrapper.className = 'row mb-4 pdf-only';
+
+                // Insert near the bottom of the PDF (right before the CTA row, which is hidden during export)
+                const ctaSection = containerEl.querySelector('.cta-section');
+                const ctaRow = ctaSection ? ctaSection.closest('.row') : null;
+                if (ctaRow && ctaRow.parentNode) {
+                    ctaRow.parentNode.insertBefore(wrapper, ctaRow);
+                } else {
+                    containerEl.appendChild(wrapper);
+                }
+            }
+
+            // Ensure the section starts on a NEW PDF page (screenshot is sliced into pages)
+            // We do this by inserting a spacer before the section to align it to the next page boundary.
+            let breakEl = document.getElementById('pdf-extra-patterns-break');
+            if (!breakEl) {
+                breakEl = document.createElement('div');
+                breakEl.id = 'pdf-extra-patterns-break';
+                breakEl.className = 'pdf-only';
+                breakEl.style.width = '100%';
+                breakEl.style.height = '0px';
+                if (wrapper.parentNode) {
+                    wrapper.parentNode.insertBefore(breakEl, wrapper);
+                }
+            } else {
+                breakEl.style.height = '0px';
+            }
+
+            const typeContent = getTypeContent();
+
+            wrapper.innerHTML = `
+              <div class="col-12">
+                <div class="pattern-breakdown-card" style="margin-top: 8px;">
+                  <h5 style="margin-bottom: 8px;">Additional patterns in the top score band</h5>
+                  <p style="color: var(--text-secondary); margin-bottom: 18px;">
+                    Dashboard shows a maximum of 2. This PDF includes the additional patterns that also land in <strong>${band.label}</strong>.
+                  </p>
+                  <div class="row g-4">
+                    ${extras.map(([p, s]) => {
+                const c = typeContent[p];
+                const sev = classifySeverity(s);
+                const accent = sev === 'HIGH' ? '#F70000' : '#f39c12';
+                const badgeGrad = sev === 'HIGH'
+                    ? 'linear-gradient(135deg, #F70000 0%, #c82333 100%)'
+                    : 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)';
+
+                return `
+                        <div class="col-lg-6">
+                          <div class="pattern-card">
+                            <div class="pattern-header">
+                              <div class="pattern-icon" style="background: ${badgeGrad};">📌</div>
+                              <div>
+                                <h4 class="mb-0" style="font-weight: 800; color: var(--text-primary); font-size: 1.5rem;">${c?.title || p}</h4>
+                                <p class="mb-0 mt-2" style="color: var(--text-secondary); font-size: 0.95rem;">Score: ${s} / 10</p>
+                              </div>
+                            </div>
+                            <div class="mt-3 mb-3">
+                              <span class="severity-badge severity-${sev.toLowerCase()}" style="font-size: 0.9rem; padding: 8px 16px; background: ${badgeGrad};">Severity: ${sev}</span>
+                            </div>
+
+                            <div class="info-box" style="border-left-color: ${accent};">
+                              <h6 style="color: ${accent};">What this means</h6>
+                              <p>${c?.meaning || ''}</p>
+                            </div>
+
+                            <div class="info-box" style="border-left-color: ${accent};">
+                              <h6 style="color: ${accent};">What's happening</h6>
+                              <ul>${(c?.happening || []).map(i => `<li>${i}</li>`).join('')}</ul>
+                            </div>
+
+                            <div class="info-box" style="border-left-color: ${accent};">
+                              <h6 style="color: ${accent};">Why it's happening</h6>
+                              <p>${c?.why || ''}</p>
+                            </div>
+
+                            <div class="info-box" style="border-left-color: ${accent};">
+                              <h6 style="color: ${accent};">How this hits profit</h6>
+                              <ul>${(c?.profit || []).map(i => `<li>${i}</li>`).join('')}</ul>
+                            </div>
+
+                            <div class="action-box" style="border-color: ${accent};">
+                              <h6 style="color: ${accent};">What to fix first</h6>
+                              <p>${c?.fixFirst || ''}</p>
+                            </div>
+
+                            <div class="action-box" style="border-color: ${accent}; margin-top: 16px;">
+                              <h6 style="color: ${accent};">Next step</h6>
+                              <p>${c?.nextStep || ''}</p>
+                            </div>
+                          </div>
+                        </div>
+                      `;
+            }).join('')}
+                  </div>
+                </div>
+              </div>
+            `;
+
+            try {
+                // Match the PDF slicing math:
+                // one page slice height in CSS px ≈ containerWidth * (pageHeightMm / pageWidthMm)
+                const pdfWidth = 210;
+                const pdfHeight = 297;
+                const margin = 10;
+                const pageWidth = pdfWidth - (margin * 2);   // 190mm
+                const pageHeight = pdfHeight - (margin * 2); // 277mm
+
+                // Reset break height first so we measure the real top
+                breakEl.style.height = '0px';
+
+                const containerTop = containerEl.getBoundingClientRect().top;
+                const wrapperTop = wrapper.getBoundingClientRect().top - containerTop;
+                const pageSliceHeightPx = containerEl.scrollWidth * (pageHeight / pageWidth);
+
+                if (pageSliceHeightPx > 0) {
+                    const mod = ((wrapperTop % pageSliceHeightPx) + pageSliceHeightPx) % pageSliceHeightPx;
+                    const pad = (pageSliceHeightPx - mod) % pageSliceHeightPx;
+                    // Pad to the NEXT page boundary (even if we're close to it, that's fine)
+                    breakEl.style.height = `${Math.ceil(pad)}px`;
+                }
+            } catch (e) {
+                // ignore alignment errors; PDF export should still work
+            }
+
+            return { wrapper, breakEl };
+        }
+
+        document.getElementById('cancelEmail').addEventListener('click', () => {
+            document.getElementById('styledWrapper').style.display = 'none';
+        });
+
+        document.getElementById('submitEmail').addEventListener('click', async () => {
+            const email = document.getElementById('userEmail').value.trim();
+            const err = document.getElementById('emailError');
+            if (!email || !email.includes('@')) { err.style.display = 'block'; return; }
+            err.style.display = 'none';
+            // Update stored email if changed
+            userInfo.email = email;
+            await generateAndDownloadPDF(email);
+            document.getElementById('styledWrapper').style.display = 'none';
+        });
+
+        function upsertPdfCta(containerEl) {
+            let ctaWrapper = document.getElementById('pdf-cta-wrapper');
+            if (!ctaWrapper) {
+                ctaWrapper = document.createElement('div');
+                ctaWrapper.id = 'pdf-cta-wrapper';
+                ctaWrapper.className = 'row pdf-only';
+                ctaWrapper.innerHTML = `
+                  <div class="col-12">
+                    <div class="cta-section" style="margin-top: 32px; margin-bottom: 0;">
+                      <a class="cta-button" href="https://calendly.com/bhaconsultingsolutions/personal-coaching/?month=2026-02" target="_blank" rel="noopener noreferrer" style="display: inline-block; text-decoration: none; margin-bottom: 16px;">Discuss My Results</a>
+                      <p style="color: rgba(255,255,255,0.95); font-size: 1.1rem; margin-bottom: 16px; position: relative; z-index: 1;">Get clarity on what matters now and what can wait.</p>
+                      <a id="pdf-website-link" class="cta-button" href="https://anilkarakkattuu.com/" target="_blank" rel="noopener noreferrer" style="display: inline-block; text-decoration: none; position: relative; z-index: 1;">Visit anilkarakkattuu.com</a>
+                    </div>
+                  </div>
+                `;
+                containerEl.appendChild(ctaWrapper);
+            }
+            return ctaWrapper;
+        }
+
+        async function generateAndDownloadPDF(email, sendEmailToAdminOnly) {
+            const FRAG = window.finalResult;
+            if (!FRAG) {
+                if (!sendEmailToAdminOnly) alert('No result to export.');
+                return;
+            }
+
+            // Hide the web CTA section and add PDF CTA section
+            const ctaSection = container.querySelector('.cta-section');
+            const ctaRow = ctaSection ? ctaSection.closest('.row') : null;
+            const originalCTADisplay = ctaRow ? ctaRow.style.display : '';
+            if (ctaRow) {
+                ctaRow.style.display = 'none';
+            }
+
+            // PDF-only additions: temporarily inject extra pattern cards (if needed) AND new CTA
+            let pdfExtra = null;
+            let pdfCta = null;
+            document.body.classList.add('pdf-mode');
+
+            // Link coordinates (relative to container)
+            let btnLinkCoords = null;
+            let websiteLinkCoords = null;
+
+            try {
+                pdfExtra = upsertPdfExtraPatterns(container, FRAG);
+                pdfCta = upsertPdfCta(container);
+
+                // Capture button coordinates for PDF link BEFORE html2canvas
+                const pdfBtn = document.querySelector('#pdf-cta-wrapper .cta-button');
+                if (pdfBtn) {
+                    const btnRect = pdfBtn.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    btnLinkCoords = {
+                        x: btnRect.left - containerRect.left,
+                        y: btnRect.top - containerRect.top,
+                        w: btnRect.width,
+                        h: btnRect.height
+                    };
+                }
+                const pdfWebsiteLink = document.getElementById('pdf-website-link');
+                if (pdfWebsiteLink) {
+                    const linkRect = pdfWebsiteLink.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    websiteLinkCoords = {
+                        x: linkRect.left - containerRect.left,
+                        y: linkRect.top - containerRect.top,
+                        w: linkRect.width,
+                        h: linkRect.height
+                    };
+                }
+
+            } catch (e) {
+                console.error(e);
+                pdfExtra = null;
+                pdfCta = null;
+            }
+
+            try {
+                // Scroll to top
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // Capture the container with html2canvas
+                // NOTE: scale heavily affects speed + memory. 2.0 is a good balance for quality vs performance.
+                const canvas = await html2canvas(container, {
+                    scale: 2.0,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#f5f7fa',
+                    width: container.scrollWidth,
+                    height: container.scrollHeight,
+                    windowWidth: container.scrollWidth,
+                    windowHeight: container.scrollHeight,
+                    scrollX: 0,
+                    scrollY: 0,
+                    allowTaint: false,
+                    letterRendering: false,
+                    onclone: function (clonedDoc) {
+                        // Ensure styles are preserved
+                        const clonedContainer = clonedDoc.querySelector('#assessment-container');
+                        if (clonedContainer) {
+                            clonedContainer.style.transform = 'none';
+                        }
+                    }
+                });
+
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+
+                // A4 page dimensions in mm
+                const pdfWidth = 210;
+                const pdfHeight = 297;
+                const margin = 10;
+                const pageWidth = pdfWidth - (margin * 2);
+                const pageHeight = pdfHeight - (margin * 2);
+
+                // Calculate image dimensions to fit page width
+                const imgAspectRatio = imgWidth / imgHeight;
+                const finalWidth = pageWidth;
+                const finalHeight = pageWidth / imgAspectRatio;
+
+                // Create PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                });
+
+                // Split across pages
+                let yPosition = 0;
+                let pageNum = 0;
+
+                while (yPosition < finalHeight) {
+                    if (pageNum > 0) {
+                        pdf.addPage();
+                    }
+
+                    const remainingHeight = finalHeight - yPosition;
+                    const pageImgHeight = Math.min(pageHeight, remainingHeight);
+
+                    // Calculate source position
+                    const sourceY = (yPosition / finalHeight) * imgHeight;
+                    const sourceHeight = (pageImgHeight / finalHeight) * imgHeight;
+
+                    // Extract page slice from canvas
+                    const pageCanvas = document.createElement('canvas');
+                    pageCanvas.width = imgWidth;
+                    pageCanvas.height = sourceHeight;
+                    const ctx = pageCanvas.getContext('2d');
+                    ctx.drawImage(canvas, 0, sourceY, imgWidth, sourceHeight, 0, 0, imgWidth, sourceHeight);
+
+                    // JPEG is much faster/smaller than PNG for screenshot-style pages
+                    const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.85);
+                    pdf.addImage(pageImgData, 'JPEG', margin, margin, finalWidth, pageImgHeight);
+
+                    yPosition += pageHeight;
+                    pageNum++;
+                }
+
+                // Add clickable links in PDF
+                const k = pageWidth / container.scrollWidth; // mm per px
+                function addPdfLink(coords, url) {
+                    if (!coords) return;
+                    const x_mm = margin + (coords.x * k);
+                    const y_mm_total = coords.y * k;
+                    const pIndex = Math.floor(y_mm_total / pageHeight);
+                    const y_on_page = margin + (y_mm_total % pageHeight);
+                    const w_mm = coords.w * k;
+                    const h_mm = coords.h * k;
+                    if (pIndex >= 0 && pIndex < pdf.getNumberOfPages()) {
+                        pdf.setPage(pIndex + 1);
+                        pdf.link(x_mm, y_on_page, w_mm, h_mm, { url: url });
+                    }
+                }
+                addPdfLink(btnLinkCoords, 'https://calendly.com/bhaconsultingsolutions/personal-coaching/?month=2026-02');
+                addPdfLink(websiteLinkCoords, 'https://anilkarakkattuu.com/');
+
+                const pdfBlob = pdf.output('blob');
+
+                // Remove PDF-only additions
+                document.body.classList.remove('pdf-mode');
+                if (pdfExtra?.breakEl && pdfExtra.breakEl.parentNode) {
+                    pdfExtra.breakEl.parentNode.removeChild(pdfExtra.breakEl);
+                }
+                if (pdfExtra?.wrapper && pdfExtra.wrapper.parentNode) {
+                    pdfExtra.wrapper.parentNode.removeChild(pdfExtra.wrapper);
+                }
+                if (pdfCta && pdfCta.parentNode) {
+                    pdfCta.parentNode.removeChild(pdfCta);
+                }
+
+                // Restore web CTA section
+                if (ctaRow) {
+                    ctaRow.style.display = originalCTADisplay;
+                }
+
+                // Only download when user clicked "Download Report" (not when sending the one email on completion)
+                if (!sendEmailToAdminOnly) {
+                    const url = URL.createObjectURL(pdfBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'decision-debt-report.pdf';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }
+
+                // Send email with PDF to admin only when questionnaire was just completed (one-time email with PDF)
+                if (sendEmailToAdminOnly && pdfBlob && pdfBlob.size > 0) {
+                    const emailToUse = email || userInfo.email;
+                    console.log('📧 Sending PDF email to admin (on completion). Email:', emailToUse, 'PDF Blob size:', pdfBlob.size + ' bytes');
+
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        const base64data = reader.result;
+
+                        const formData = new FormData();
+                        formData.append('action', 'send_decision_debt_pdf_email_base64');
+                        formData.append('user_email', emailToUse);
+                        formData.append('user_name', userInfo.name || 'User');
+                        formData.append('answers', JSON.stringify(answers));
+                        formData.append('pdf_base64', base64data);
+
+                        fetch('/wp-admin/admin-ajax.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.ok ? response.text() : Promise.reject(new Error('HTTP ' + response.status)))
+                            .then(text => {
+                                try { return JSON.parse(text); } catch (e) { throw new Error('Invalid JSON'); }
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    console.log('✅ Email with PDF sent to admin.');
+                                } else {
+                                    console.error('❌ Failed to send PDF email:', data.data);
+                                }
+                            })
+                            .catch(error => console.error('❌ Error sending PDF email:', error));
+                    };
+                    reader.onerror = function (error) {
+                        console.error('❌ Failed to read PDF blob:', error);
+                    };
+                    reader.readAsDataURL(pdfBlob);
+                }
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again.');
+
+                // Remove PDF-only additions on error
+                document.body.classList.remove('pdf-mode');
+                if (pdfExtra?.breakEl && pdfExtra.breakEl.parentNode) {
+                    pdfExtra.breakEl.parentNode.removeChild(pdfExtra.breakEl);
+                }
+                if (pdfExtra?.wrapper && pdfExtra.wrapper.parentNode) {
+                    pdfExtra.wrapper.parentNode.removeChild(pdfExtra.wrapper);
+                }
+                if (pdfCta && pdfCta.parentNode) {
+                    pdfCta.parentNode.removeChild(pdfCta);
+                }
+
+                // Restore web CTA section on error
+                if (ctaRow) {
+                    ctaRow.style.display = originalCTADisplay;
+                }
+            }
+        }
+
+        /* ----- Utility + restart ----- */
+        function restart() {
+            currentQuestion = 0;
+            answers = {};
+            userInfo = { name: '', email: '' };
+            renderWelcomeScreen();
+        }
+
+        // Start with welcome screen
+        renderWelcomeScreen();
+
+    </script>
+
+</body>
+
+</html>
+
+</html>

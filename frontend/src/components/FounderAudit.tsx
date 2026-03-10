@@ -4,9 +4,11 @@ import { useToast } from "@/hooks/use-toast";
 import {
   AuditData,
   AuditResults,
+  UserSegmentationData,
   INITIAL_CATEGORIES,
   INITIAL_PATTERNS,
-  INITIAL_DELAY_TAX
+  INITIAL_DELAY_TAX,
+  INITIAL_DELAY_TAX_VALUES
 } from "@/types/audit";
 import { IntroSection } from "./audit/IntroSection";
 import { EmailCapture } from "./audit/EmailCapture";
@@ -27,17 +29,20 @@ export function FounderAudit() {
   const [step, setStep] = useState<Step>("intro");
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [segmentation, setSegmentation] = useState({
+  const [segmentation, setSegmentation] = useState<UserSegmentationData>({
     founderRole: "",
     revenueRange: "",
     teamSize: "",
     industryVertical: "",
+    otherIndustryVertical: "",
   });
   const [auditData, setAuditData] = useState<AuditData>({
+    timeframe: 'Week',
     decisionCategories: INITIAL_CATEGORIES,
     annualCompensation: 400000,
     averageMinutesPerDecision: 20,
     delayTax: INITIAL_DELAY_TAX,
+    delayTaxValues: INITIAL_DELAY_TAX_VALUES,
     patterns: INITIAL_PATTERNS,
   });
 
@@ -55,7 +60,8 @@ export function FounderAudit() {
     const delegatableDecisions = totals.totalCouldDelegate;
     const decisionsForCalc = delegatableDecisions > 0 ? delegatableDecisions : totals.totalDecisions;
 
-    const hoursPerWeek = (decisionsForCalc * auditData.averageMinutesPerDecision) / 60;
+    const weeklyDecisions = auditData.timeframe === 'Month' ? decisionsForCalc / 4 : decisionsForCalc;
+    const hoursPerWeek = (weeklyDecisions * auditData.averageMinutesPerDecision) / 60;
     const sectionACost = hoursPerWeek * 50 * hourlyRate;
 
     const delayTaxAnnual = auditData.delayTax.reduce((sum, item) => sum + item.amount, 0) * 12;
@@ -99,6 +105,7 @@ export function FounderAudit() {
 
   const handleRestart = () => {
     setAuditData({
+      timeframe: 'Week',
       decisionCategories: INITIAL_CATEGORIES.map(c => ({
         ...c,
         decisions: 0,
@@ -108,6 +115,7 @@ export function FounderAudit() {
       annualCompensation: 400000,
       averageMinutesPerDecision: 20,
       delayTax: INITIAL_DELAY_TAX.map(d => ({ ...d, amount: 0 })),
+      delayTaxValues: INITIAL_DELAY_TAX_VALUES,
       patterns: INITIAL_PATTERNS.map(p => ({ ...p, checked: false })),
     });
     setUserName("");
@@ -117,6 +125,7 @@ export function FounderAudit() {
       revenueRange: "",
       teamSize: "",
       industryVertical: "",
+      otherIndustryVertical: "",
     });
     setStep("intro");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -140,7 +149,7 @@ export function FounderAudit() {
     try {
       const sessionId = tracker.getSessionId();
       console.log("Saving audit results...");
-      const response = await fetch("http://localhost:5000/api/audit", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/audit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -229,6 +238,10 @@ export function FounderAudit() {
 
       {step === "decisions" && (
         <DecisionAudit
+          timeframe={auditData.timeframe}
+          onTimeframeUpdate={(timeframe) =>
+            setAuditData((prev) => ({ ...prev, timeframe }))
+          }
           categories={auditData.decisionCategories}
           onUpdate={(categories) =>
             setAuditData((prev) => ({ ...prev, decisionCategories: categories }))
@@ -240,12 +253,14 @@ export function FounderAudit() {
 
       {step === "cost" && (
         <CostCalculator
+          timeframe={auditData.timeframe}
           totalDecisions={totals.totalDecisions}
           totalCouldDelegate={totals.totalCouldDelegate}
           totalNotSure={totals.totalNotSure}
           annualCompensation={auditData.annualCompensation}
           averageMinutes={auditData.averageMinutesPerDecision}
           delayTax={auditData.delayTax}
+          delayTaxValues={auditData.delayTaxValues}
           onUpdate={(comp, minutes) =>
             setAuditData((prev) => ({
               ...prev,
@@ -253,8 +268,8 @@ export function FounderAudit() {
               averageMinutesPerDecision: minutes,
             }))
           }
-          onUpdateDelayTax={(delayTax) =>
-            setAuditData((prev) => ({ ...prev, delayTax }))
+          onUpdateDelayTax={(delayTax, delayTaxValues) =>
+            setAuditData((prev) => ({ ...prev, delayTax, delayTaxValues }))
           }
           onNext={() => navigateToStep("patterns")}
           onBack={() => navigateToStep("decisions")}

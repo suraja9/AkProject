@@ -25,8 +25,8 @@ const AdminUsageAnalytics = () => {
         setLoading(true);
         try {
             const [sessionsRes, auditsRes] = await Promise.all([
-                fetch('http://localhost:5000/api/sessions'),
-                fetch('http://localhost:5000/api/audits')
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/sessions`),
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/audits`)
             ]);
 
             if (!sessionsRes.ok || !auditsRes.ok) throw new Error('Failed to fetch data');

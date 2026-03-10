@@ -22,7 +22,7 @@ const AdminLive = () => {
     const fetchSessions = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/sessions');
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/sessions`);
             if (!response.ok) throw new Error('Failed to fetch sessions');
             const data = await response.json();
             // Filter for live/recent sessions only or show all with status?
