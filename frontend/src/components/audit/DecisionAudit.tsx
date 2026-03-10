@@ -25,7 +25,7 @@ export function DecisionAudit({ timeframe, onTimeframeUpdate, categories, onUpda
   const totals = useMemo(() => {
     const totalDecisions = categories.reduce((sum, cat) => sum + cat.decisions, 0);
     const totalCouldDelegate = categories.reduce((sum, cat) => sum + cat.couldDelegate, 0);
-    const totalNotSure = 0; // Removing Not Sure from calculations
+    const totalNotSure = categories.filter((cat) => cat.notSure).length;
 
     const operationalDecisions = categories
       .filter((cat) => OPERATIONAL_CATEGORY_IDS.includes(cat.id))
@@ -104,8 +104,9 @@ export function DecisionAudit({ timeframe, onTimeframeUpdate, categories, onUpda
         {/* Header */}
         <div className="hidden md:grid grid-cols-12 gap-2 p-4 bg-secondary/30 border-b border-border text-sm font-medium text-foreground/80">
           <div className="col-span-4 text-xl">Category</div>
-          <div className="col-span-4 text-mg text-left"># of decisions</div>
-          <div className="col-span-4 text-mg text-left">Could delegate</div>
+          <div className="col-span-3 text-mg text-center"># of decisions</div>
+          <div className="col-span-3 text-mg text-center">Could delegate</div>
+          <div className="col-span-2 text-mg text-center">Not sure</div>
         </div>
 
         {/* Rows */}
@@ -129,20 +130,9 @@ export function DecisionAudit({ timeframe, onTimeframeUpdate, categories, onUpda
                 </TooltipProvider>
               )}
             </div>
-            <div className="col-span-1 md:col-span-8 grid grid-cols-2 gap-4 items-center">
-              <div className="flex flex-col items-center gap-2 md:hidden">
-                <span className="text-xs text-foreground/75"># of decisions</span>
-                <Input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={category.decisions || ""}
-                  onChange={(e) => handleFieldChange(category.id, 'decisions', parseInt(e.target.value) || 0)}
-                  className="w-full text-center input-field"
-                  placeholder="0"
-                />
-              </div>
-              <div className="hidden md:block px-4">
+            <div className="col-span-1 md:col-span-8 grid grid-cols-3 md:grid-cols-8 gap-4 items-center">
+              <div className="flex flex-col items-center gap-2 md:col-span-3">
+                <span className="text-xs text-foreground/75 md:hidden"># of decisions</span>
                 <Input
                   type="number"
                   min="0"
@@ -154,8 +144,8 @@ export function DecisionAudit({ timeframe, onTimeframeUpdate, categories, onUpda
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-2 md:hidden">
-                <span className="text-xs text-foreground/75">Could delegate</span>
+              <div className="flex flex-col items-center gap-2 md:col-span-3">
+                <span className="text-xs text-foreground/75 md:hidden">Could delegate</span>
                 <Input
                   type="number"
                   min="0"
@@ -166,15 +156,13 @@ export function DecisionAudit({ timeframe, onTimeframeUpdate, categories, onUpda
                   placeholder="0"
                 />
               </div>
-              <div className="hidden md:block px-4">
-                <Input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={category.couldDelegate || ""}
-                  onChange={(e) => handleFieldChange(category.id, 'couldDelegate', parseInt(e.target.value) || 0)}
-                  className="w-full text-center input-field"
-                  placeholder="0"
+
+              <div className="flex flex-col items-center justify-center gap-2 md:col-span-2">
+                <span className="text-xs text-foreground/75 md:hidden">Not sure</span>
+                <Checkbox
+                  checked={category.notSure}
+                  onCheckedChange={(checked) => handleFieldChange(category.id, 'notSure', checked as boolean)}
+                  className="data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground border-accent w-6 h-6"
                 />
               </div>
             </div>
@@ -240,6 +228,9 @@ export function DecisionAudit({ timeframe, onTimeframeUpdate, categories, onUpda
             <p className="text-4xl font-display font-bold">{totals.totalDecisions}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-mg text-foreground/75">
               <span>Could Delegate: <strong className="text-success">{totals.totalCouldDelegate}</strong></span>
+              {totals.totalNotSure > 0 && (
+                <span>Not Sure: <strong className="text-warning">{totals.totalNotSure} categories</strong></span>
+              )}
             </div>
           </div>
           <div className={cn("px-6 py-3 rounded-xl", scoreInfo.bg)}>
