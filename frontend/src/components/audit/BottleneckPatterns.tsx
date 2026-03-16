@@ -1,22 +1,42 @@
-import { BottleneckPattern } from "@/types/audit";
+import { BottleneckPattern, OpenEndedResponses } from "@/types/audit";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottleneckPatternsProps {
   patterns: BottleneckPattern[];
   onUpdate: (patterns: BottleneckPattern[]) => void;
+  openEndedResponses?: OpenEndedResponses;
+  onUpdateOpenEnded?: (responses: OpenEndedResponses) => void;
   onNext: () => void;
   onBack: () => void;
 }
 
-export function BottleneckPatterns({ patterns, onUpdate, onNext, onBack }: BottleneckPatternsProps) {
+const DEFAULT_OPEN_ENDED: OpenEndedResponses = {
+  desiredOutcome: "",
+  obstacle: "",
+  anythingElse: "",
+};
+
+export function BottleneckPatterns({
+  patterns,
+  onUpdate,
+  openEndedResponses = DEFAULT_OPEN_ENDED,
+  onUpdateOpenEnded,
+  onNext,
+  onBack,
+}: BottleneckPatternsProps) {
   const checkedCount = patterns.filter((p) => p.checked).length;
 
   const handleToggle = (id: string) => {
     onUpdate(
       patterns.map((p) => (p.id === id ? { ...p, checked: !p.checked } : p))
     );
+  };
+
+  const handleOpenEnded = (field: keyof OpenEndedResponses, value: string) => {
+    onUpdateOpenEnded?.({ ...openEndedResponses, [field]: value });
   };
 
   const getStatusInfo = (count: number) => {
@@ -106,6 +126,51 @@ export function BottleneckPatterns({ patterns, onUpdate, onNext, onBack }: Bottl
             <p className="font-semibold text-danger">4–5</p>
             <p className="text-foreground/75">Urgent Overhaul</p>
           </div>
+        </div>
+      </div>
+
+      {/* Open-Ended Questions */}
+      <div className="glass-card rounded-2xl p-6 mb-8 space-y-6">
+        <div>
+          <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wider mb-1">Question 13</p>
+          <h3 className="font-display text-xl font-semibold mb-3">
+            What is the most important desired outcome for you to achieve in the next 90 days?
+          </h3>
+          <Textarea
+            id="q13-desired-outcome"
+            placeholder="Share your most important goal for the next 90 days…"
+            value={openEndedResponses.desiredOutcome}
+            onChange={(e) => handleOpenEnded("desiredOutcome", e.target.value)}
+            className="min-h-[100px] resize-none text-base"
+          />
+        </div>
+
+        <div>
+          <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wider mb-1">Question 14</p>
+          <h3 className="font-display text-xl font-semibold mb-3">
+            What is the obstacle that you think is stopping you, or what have you tried that hasn't worked in the past?
+          </h3>
+          <Textarea
+            id="q14-obstacle"
+            placeholder="Describe the main obstacle or what you've already tried…"
+            value={openEndedResponses.obstacle}
+            onChange={(e) => handleOpenEnded("obstacle", e.target.value)}
+            className="min-h-[100px] resize-none text-base"
+          />
+        </div>
+
+        <div>
+          <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wider mb-1">Question 15</p>
+          <h3 className="font-display text-xl font-semibold mb-3">
+            Is there anything else that you think we need to know about?
+          </h3>
+          <Textarea
+            id="q15-anything-else"
+            placeholder="Anything else you'd like to share…"
+            value={openEndedResponses.anythingElse}
+            onChange={(e) => handleOpenEnded("anythingElse", e.target.value)}
+            className="min-h-[80px] resize-none text-base"
+          />
         </div>
       </div>
 

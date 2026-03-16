@@ -44,6 +44,16 @@ const auditSchema = new mongoose.Schema({
         patternsChecked: Number,
         overallStatus: String
     },
+    followUp: {
+        status: { type: String, enum: ['Pending', 'Contacted', 'In Progress', 'Converted', 'Ignored'], default: 'Pending' },
+        remarks: { type: String, default: '' },
+        updatedAt: { type: Date }
+    },
+    openEndedResponses: {
+        desiredOutcome: { type: String, default: '' },
+        obstacle: { type: String, default: '' },
+        anythingElse: { type: String, default: '' }
+    },
     createdAt: { type: Date, default: Date.now }
 });
 

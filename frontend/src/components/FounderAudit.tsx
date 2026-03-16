@@ -5,6 +5,7 @@ import {
   AuditData,
   AuditResults,
   UserSegmentationData,
+  OpenEndedResponses,
   INITIAL_CATEGORIES,
   INITIAL_PATTERNS,
   INITIAL_DELAY_TAX,
@@ -44,6 +45,11 @@ export function FounderAudit() {
     delayTax: INITIAL_DELAY_TAX,
     delayTaxValues: INITIAL_DELAY_TAX_VALUES,
     patterns: INITIAL_PATTERNS,
+  });
+  const [openEndedResponses, setOpenEndedResponses] = useState<OpenEndedResponses>({
+    desiredOutcome: "",
+    obstacle: "",
+    anythingElse: "",
   });
 
   const totals = useMemo(() => {
@@ -118,6 +124,7 @@ export function FounderAudit() {
       delayTaxValues: INITIAL_DELAY_TAX_VALUES,
       patterns: INITIAL_PATTERNS.map(p => ({ ...p, checked: false })),
     });
+    setOpenEndedResponses({ desiredOutcome: "", obstacle: "", anythingElse: "" });
     setUserName("");
     setUserEmail("");
     setSegmentation({
@@ -161,6 +168,7 @@ export function FounderAudit() {
           segmentation,
           auditData,
           results,
+          openEndedResponses,
         }),
       });
 
@@ -280,6 +288,8 @@ export function FounderAudit() {
         <BottleneckPatterns
           patterns={auditData.patterns}
           onUpdate={(patterns) => setAuditData((prev) => ({ ...prev, patterns }))}
+          openEndedResponses={openEndedResponses}
+          onUpdateOpenEnded={setOpenEndedResponses}
           onNext={handleSaveResults}
           onBack={() => navigateToStep("cost")}
         />

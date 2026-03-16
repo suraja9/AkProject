@@ -17,6 +17,11 @@ import AdminFunnel from "./pages/AdminFunnel";
 import AdminBusinessMetrics from "./pages/AdminBusinessMetrics";
 import AdminTimeTrends from "./pages/AdminTimeTrends";
 import AdminReports from "./pages/AdminReports";
+import AdminLogin from "./pages/AdminLogin";
+import AdminRegister from "./pages/AdminRegister";
+import AdminFollowUp from "./pages/AdminFollowUp";
+import AdminDecisionDebt from "./pages/AdminDecisionDebt";
+import AdminQualitativeInsights from "./pages/AdminQualitativeInsights";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +34,10 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/register" element={<AdminRegister />} />
           <Route path="/admin/audits" element={<AdminAudits />} />
+          <Route path="/admin/followup" element={<AdminFollowUp />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/analytics/usage" element={<AdminUsageAnalytics />} />
           <Route path="/admin/analytics/funnel" element={<AdminFunnel />} />
@@ -38,6 +46,8 @@ const App = () => (
           <Route path="/admin/founders" element={<AdminFounders />} />
           <Route path="/admin/live" element={<AdminLive />} />
           <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/admin/analytics/decision-debt" element={<AdminDecisionDebt />} />
+          <Route path="/admin/analytics/qualitative" element={<AdminQualitativeInsights />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
 

@@ -35,6 +35,12 @@ export interface UserSegmentationData {
   otherIndustryVertical?: string;
 }
 
+export interface OpenEndedResponses {
+  desiredOutcome: string;   // Q13
+  obstacle: string;          // Q14
+  anythingElse: string;      // Q15
+}
+
 export interface AuditData {
   // Section 1: Decision Audit
   timeframe: 'Week' | 'Month';
@@ -44,6 +50,7 @@ export interface AuditData {
   delayTax: DelayTaxItem[];
   delayTaxValues: DelayTaxValues;
   patterns: BottleneckPattern[];
+  openEndedResponses?: OpenEndedResponses;
 }
 
 export interface AuditResults {

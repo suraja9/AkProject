@@ -61,6 +61,11 @@ interface Audit {
         teamSize: string;
         industryVertical: string;
     };
+    followUp?: {
+        status: string;
+        remarks: string;
+        updatedAt?: string;
+    };
     createdAt: string;
 }
 
@@ -184,6 +189,17 @@ const AdminAudits = () => {
         }
     };
 
+    const getFollowUpStatusColor = (status: string | undefined) => {
+        switch (status) {
+            case 'Converted': return 'bg-green-500/10 text-green-500 border-green-500/20';
+            case 'Contacted': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+            case 'In Progress': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+            case 'Ignored': return 'bg-neutral-500/10 text-neutral-500 border-neutral-500/20';
+            case 'Pending':
+            default: return 'bg-red-500/10 text-red-500 border-red-500/20';
+        }
+    };
+
     return (
         <AdminPageLayout
             title="Audit Submissions"
@@ -221,6 +237,7 @@ const AdminAudits = () => {
                                         <TableHead>Team</TableHead>
                                         <TableHead>Industry</TableHead>
                                         <TableHead>Status</TableHead>
+                                        <TableHead>Remark</TableHead>
                                         <TableHead className="text-right">Decisions/Wk</TableHead>
                                         <TableHead className="text-right">Bottleneck Cost</TableHead>
                                         <TableHead className="text-right">Action</TableHead>
@@ -254,6 +271,11 @@ const AdminAudits = () => {
                                                 <Badge variant="outline" className={`${getStatusColor(audit.results?.overallStatus)} border text-xs`}>
                                                     {audit.results?.overallStatus || 'Unknown'}
                                                 </Badge>
+                                            </TableCell>
+                                            <TableCell className="max-w-[150px] truncate" title={audit.followUp?.remarks || ''}>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {audit.followUp?.remarks || '-'}
+                                                </span>
                                             </TableCell>
                                             <TableCell className="text-right font-mono text-sm">
                                                 {audit.results?.totalDecisions}
@@ -412,6 +434,25 @@ const AdminAudits = () => {
                                                     <div className="text-sm text-muted-foreground italic">No specific bottleneck patterns identified.</div>
                                                 )}
                                             </div>
+                                        </section>
+                                    )}
+                                    {/* Follow-up Status */}
+                                    {selectedAudit.followUp && selectedAudit.followUp.status !== 'Pending' && (
+                                        <section className="bg-muted/30 p-4 rounded-lg border border-border mt-6">
+                                            <h3 className="text-lg font-semibold text-primary mb-3">Latest Follow-Up</h3>
+                                            <div className="flex gap-4 items-center mb-2">
+                                                <Badge variant="outline">{selectedAudit.followUp.status}</Badge>
+                                                {selectedAudit.followUp.updatedAt && (
+                                                    <span className="text-xs text-muted-foreground">
+                                                        Last updated: {formatDate(selectedAudit.followUp.updatedAt)}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            {selectedAudit.followUp.remarks && (
+                                                <div className="text-sm p-3 bg-background rounded border mt-2">
+                                                    <p className="whitespace-pre-wrap">{selectedAudit.followUp.remarks}</p>
+                                                </div>
+                                            )}
                                         </section>
                                     )}
                                 </div>

@@ -10,6 +10,10 @@ import {
     TrendingUp,
     Target,
     Sparkles,
+    UserPlus,
+    MessageSquare,
+    Network,
+    MessagesSquare,
 } from "lucide-react"
 
 import {
@@ -28,31 +32,42 @@ import {
 } from "@/components/ui/sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const overviewItems = [
     { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
     { title: "Audits", url: "/admin/audits", icon: Inbox },
+    { title: "Follow-Up", url: "/admin/followup", icon: MessageSquare },
     { title: "Founders", url: "/admin/founders", icon: Users },
 ];
 
 const analyticsItems = [
     { title: "Deep Analytics", url: "/admin/analytics", icon: Sparkles },
+    { title: "Decision Debt", url: "/admin/analytics/decision-debt", icon: Network },
     { title: "Usage Analytics", url: "/admin/analytics/usage", icon: BarChart3 },
     { title: "Funnel", url: "/admin/analytics/funnel", icon: Filter },
     { title: "Business Metrics", url: "/admin/analytics/business", icon: Target },
     { title: "Time Trends", url: "/admin/analytics/trends", icon: TrendingUp },
+    { title: "Qualitative Insights", url: "/admin/analytics/qualitative", icon: MessagesSquare },
 ];
 
 const moreItems = [
     { title: "Live Activity", url: "/admin/live", icon: Activity },
     { title: "Reports", url: "/admin/reports", icon: FileText },
+    { title: "Register Admin", url: "/admin/register", icon: UserPlus },
 ];
 
 export function AdminSidebar() {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminEmail");
+        navigate("/admin/login");
+    };
 
     const NavItem = ({ item, isActive }: { item: typeof overviewItems[0]; isActive: boolean }) => (
         <SidebarMenuItem>
@@ -151,6 +166,7 @@ export function AdminSidebar() {
                         <TooltipTrigger asChild>
                             <button
                                 type="button"
+                                onClick={handleLogout}
                                 className="shrink-0 text-muted-foreground hover:text-sidebar-destructive hover:bg-sidebar-destructive/15 p-2 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:outline-none"
                                 aria-label="Sign out"
                             >

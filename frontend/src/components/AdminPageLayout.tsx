@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin-sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -13,6 +14,22 @@ interface AdminPageLayoutProps {
 }
 
 export function AdminPageLayout({ title, description, actions, children }: AdminPageLayoutProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    // If not authenticated, redirect to login unless already going there.
+    if (!token && location.pathname !== "/admin/login") {
+      navigate("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [navigate, location]);
+
+  if (!isAuthenticated) return null;
+
   return (
     <SidebarProvider>
       <AdminSidebar />
